@@ -1,3 +1,4 @@
 import { handler as authHandler } from "@/auth";
 
-export { authHandler as GET, authHandler as POST };
+export const GET = authHandler.GET;
+export const POST = authHandler.POST;
