@@ -1,7 +1,8 @@
 import { IAppState, IAppStore } from '@/store';
 import { SetStateAction } from 'jotai';
 import { Dispatch } from 'react';
-
+import { ReactNode } from 'react';
+export * from './schemas/schemas';
 export * from './schemas/schemas';
 
 export interface IDocument {
@@ -40,6 +41,8 @@ export interface IPayload {
   policy: Partial<IPolicy>;
 }
 
+export type DialogContentType = ReactNode | string | null;
+export type DalogSize = 'sm' | 'md' | 'lg' | 'xl';
 export interface IAppContextType {
   theme: string;
   state: IAppState;

@@ -1,22 +1,76 @@
 "use client";
 
-import React, { useEffect } from 'react'
-import { useToast } from '@/hooks/use-toast'
+import { useMemo } from 'react';
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 const LandingPage = () => {
-    const { toasts, toast, dismiss } = useToast();
-    useEffect(() => {
-        toast({
-            title: 'Hello',
-            description: 'World',
-            duration: 5000,
-        });
-    }, [toast]);
+    const data = useMemo(() => [
+        {
+            name: "Jan",
+            total: 167,
+        },
+        {
+            name: "Feb",
+            total: 245,
+        },
+        {
+            name: "Mar",
+            total: 328,
+        },
+        {
+            name: "Apr",
+            total: 403,
+        },
+        {
+            name: "May",
+            total: 459,
+        },
+        {
+            name: "Jun",
+            total: 512,
+        },
+        {
+            name: "Jul",
+            total: 573,
+        },
+    ], [])
+
     return (
-        <div>
-            <label>Test
-                <input name='jjj' type='text' />
-            </label>
-        </div>
+        <>
+            <ResponsiveContainer width="10µvc%" height={350}>
+                <BarChart data={data}>
+                    <XAxis
+                        dataKey="name"
+                        stroke="#ff7300"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                    />
+                    <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(value) => `${value}`}
+                    />
+                    <Tooltip
+                        cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                        contentStyle={{
+                            background: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: 'var(--radius)',
+                            padding: '8px'
+                        }}
+                    />
+                    <Bar
+                        dataKey="total"
+                        fill="currentColor"
+                        radius={[4, 4, 0, 0]}
+                        className="fill-primary"
+                    />
+                </BarChart>
+            </ResponsiveContainer>
+        </>
     )
 }
 
