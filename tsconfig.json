@@ -44,10 +44,12 @@
       ],
       "@/utils/*": [
         "./utils/*"
-      ]
+      ],
+      "auth": ["./auth"]
     }
   },
   "include": [
+    "process.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
