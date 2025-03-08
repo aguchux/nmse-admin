@@ -3,8 +3,6 @@ import React from 'react'
 
 
 const SiginPage = () => {
-
-
     return (
         <SignupScreen />
     )
