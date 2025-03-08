@@ -37,7 +37,7 @@ export type AuthUser = User & {
     token: string;
 };
 
-export const authConfig = {
+export const authConfig: NextAuthConfig = {
     providers: [
         Credentials({
             credentials: {
