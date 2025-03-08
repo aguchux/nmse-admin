@@ -35,7 +35,11 @@ export default function SigninScreen() {
                 },
                 onError: (error: { response?: { data: string }; message: string }) => {
                     console.error("Login failed", error.response?.data || error.message);
-                    toast.error("Login failed. Please try again.");
+                    toast.error(error?.message);
+                    return;
+                },
+                onSettled(data, error, variables, context) {
+                    // console.log("Login Mutation Settled", data, error, variables, context);
                 },
             }
         );
