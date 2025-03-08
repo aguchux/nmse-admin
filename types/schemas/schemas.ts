@@ -34,7 +34,12 @@ export const EmailSchema = z.object({
     .email({ message: 'Invalid email!' }),
 });
 
-export const LoginSchema = z.object({
+export const SignupSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(1, { message: 'Full name required!' })
+    .min(2, { message: 'Full name must have at least 2 characters!' }),
   email: z
     .string()
     .trim()
