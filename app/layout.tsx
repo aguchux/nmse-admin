@@ -1,6 +1,7 @@
 'use client';
 
 import { AppContextProvider } from '@/context/AppContext';
+import { AuthContextProvider } from '@/context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createStore, Provider } from 'jotai';
 import { DevTools } from 'jotai-devtools';
@@ -28,45 +29,47 @@ export default function AppLayout({
         className={`antialiased  bg-gray-200`}
       >
         <QueryClientProvider client={queryClient}>
-          <Provider store={customStore}>
-            <DevTools store={customStore} />
-            <AppContextProvider>
-              <GlobalLoader />
-              {children}
-              <Toaster
-                position="top-center"
-                reverseOrder={false}
-                gutter={8}
-                containerClassName=""
-                containerStyle={{}}
-                toastOptions={{
-                  // Define default options
-                  className: '',
-                  duration: 5000,
-                  removeDelay: 1000,
-                  style: {
-                    background: '#363636',
-                    color: '#fff',
-                  },
-                  // Default options for specific types
-                  success: {
-                    duration: 3000,
-                    iconTheme: {
-                      primary: 'green',
-                      secondary: 'black',
+          <AuthContextProvider>
+            <Provider store={customStore}>
+              <DevTools store={customStore} />
+              <AppContextProvider>
+                <GlobalLoader />
+                {children}
+                <Toaster
+                  position="top-center"
+                  reverseOrder={false}
+                  gutter={8}
+                  containerClassName=""
+                  containerStyle={{}}
+                  toastOptions={{
+                    // Define default options
+                    className: '',
+                    duration: 5000,
+                    removeDelay: 1000,
+                    style: {
+                      background: '#363636',
+                      color: '#fff',
                     },
-                  },
-                  error: {
-                    duration: 3000,
-                    iconTheme: {
-                      primary: 'red',
-                      secondary: 'black',
+                    // Default options for specific types
+                    success: {
+                      duration: 3000,
+                      iconTheme: {
+                        primary: 'green',
+                        secondary: 'black',
+                      },
                     },
-                  },
-                }}
-              />
-            </AppContextProvider>
-          </Provider>
+                    error: {
+                      duration: 3000,
+                      iconTheme: {
+                        primary: 'red',
+                        secondary: 'black',
+                      },
+                    },
+                  }}
+                />
+              </AppContextProvider>
+            </Provider>
+          </AuthContextProvider>
         </QueryClientProvider>
       </body>
     </html>

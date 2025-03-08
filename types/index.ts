@@ -1,8 +1,6 @@
 import { IAppState, IAppStore } from '@/store';
 import { SetStateAction } from 'jotai';
-import { Dispatch } from 'react';
-import { ReactNode } from 'react';
-export * from './schemas/schemas';
+import { Dispatch, ReactNode } from 'react';
 export * from './schemas/schemas';
 
 export interface IDocument {
@@ -13,32 +11,27 @@ export interface IDocument {
   updatedBy?: string;
 }
 
-export interface IAuth extends IDocument {
-  id: string;
-  email: string;
-  role: string;
-  policy: IPolicy;
-  user: IUser;
-  accessToken?: string;
-}
-
 export interface IUser extends IDocument {
   fullName: string;
+  email: string;
+  mobile?: string;
+  policy: IPolicy;
+  role: string;
 }
+
 export interface IPolicy extends IDocument {
+  user: IUser;
+  userId: string;
   create: boolean;
   read: boolean;
   update: boolean;
   delete: boolean;
 }
 
-export interface IPayload {
-  authId: string;
-  userId: string;
-  fullName: string;
-  email: string;
-  role: string;
-  policy: Partial<IPolicy>;
+export type IAuthContextType = {
+  user: unknown | null;
+  isLogged: boolean;
+  isBusy: boolean;
 }
 
 export type DialogContentType = ReactNode | string | null;

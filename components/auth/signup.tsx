@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { ArrowLeft, EyeIcon, EyeOffIcon, Facebook, Mail } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
-import { LoadingSpinner } from "../loaders/loading-spinner";
-import { toast } from "react-hot-toast";
 import { useSignup } from "@/libs/actions/auth";
+import { toast } from "react-hot-toast";
+import { LoadingSpinner } from "../loaders/loading-spinner";
 import AuthRightBox from "./auth-right-box";
 
 export const SignupScreen = () => {
@@ -27,6 +27,7 @@ export const SignupScreen = () => {
                 onSuccess: (data) => {
                     console.log("Signup successful", data);
                     toast.success("Signup successful!");
+                    window.location.href = "/";
                 },
                 onError: (error: { response?: { data: string }; message: string }) => {
                     console.error("Signup failed", error.response?.data || error.message);

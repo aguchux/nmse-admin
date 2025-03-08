@@ -1,26 +1,25 @@
 "use client";
 
-import { axiosInstance } from "@/api";
-import { IUser } from "@/types";
 import { useMutation } from "@tanstack/react-query";
-import { signIn, SignInResponse } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Auth, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile, UserCredential } from "firebase/auth";
+import { createFirebaseApp } from "../firebase/client";
+
+const app = createFirebaseApp();
+const auth: Auth = getAuth(app);
 
 // Login Mutation Hook
 export const useLogin = () => {
-    const router = useRouter();
     return useMutation({
-        mutationFn: async ({ email, password }: { email: string; password: string }): Promise<SignInResponse> => {
-            const result = await signIn("credentials", {
-                email,
-                password,
-                redirect: false, // Prevent automatic redirection
-            });
-            return result as SignInResponse;
+        mutationFn: async ({ email, password }: { email: string; password: string }): Promise<UserCredential> => {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                return userCredential as UserCredential;
+            } catch (error) {
+                throw new Error("Invalid email or password");
+            }
         },
     });
 };
-
 
 // Signup Mutation Hook
 export const useSignup = () => {
@@ -29,12 +28,17 @@ export const useSignup = () => {
             fullName: string;
             email: string;
             password: string;
-        }): Promise<IUser> => {
-            const response = await axiosInstance.post<IUser>(`/users/register`, data);
-            if (!response.status.toString().startsWith("2")) {
-                throw new Error("Invalid credentials.");
+        }): Promise<UserCredential> => {
+            try {
+                const { fullName, email, password } = data;
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await updateProfile(user, { displayName: fullName });
+                return userCredential as UserCredential;
+
+            } catch (error) {
+                throw new Error("Signup failed. Please try again");
             }
-            return response.data as IUser;
         },
     });
 };

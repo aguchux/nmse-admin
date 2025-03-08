@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { useAppContext } from "@/context/AppContext";
 import { useLogin } from "@/libs/actions/auth";
+import { storeSession } from "@/libs/actions/session";
 import { toast } from "react-hot-toast";
 import { LoadingSpinner } from "../loaders/loading-spinner";
 import AuthRightBox from "./auth-right-box";
@@ -25,11 +26,8 @@ export default function SigninScreen() {
         loginMutation.mutate(
             { email, password },
             {
-                onSuccess: (data) => {
-                    if (data.error) {
-                        toast.error(data.error);
-                        return;
-                    }
+                onSuccess: async (data) => {
+                    await storeSession()
                     toast.success("Login successful");
                     window.location.href = "/";
                 },
