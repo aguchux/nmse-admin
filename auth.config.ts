@@ -1,6 +1,6 @@
 export const runtime = "edge";
 
-import type { AuthOptions, DefaultSession, User } from "next-auth";
+import type { DefaultSession, NextAuthConfig, User } from "next-auth";
 import Credentials from 'next-auth/providers/credentials';
 import { ZodError } from 'zod';
 import { axiosInstance } from './api/apiCaller';
@@ -23,13 +23,10 @@ declare module 'next-auth' {
         } & DefaultSession['user'];
         accessToken: string;
     }
+    interface JWT {
+        accessToken?: string
+    }
 }
-
-// declare module "next-auth/jwt" {
-//     interface JWT {
-//         accessToken?: string
-//     }
-// }
 
 export type AuthUser = User & {
     authId: string;
@@ -74,11 +71,8 @@ export const authConfig = {
             },
         })
     ],
+    basePath: "/auth",
     session: { strategy: 'jwt' },
-    secret: process.env.NEXTAUTH_SECRET,
-    jwt: {
-        secret: process.env.NEXTAUTH_JWT_SECRET,
-    },
     callbacks: {
         async session({ session, token, user }) {
             return session;
@@ -94,4 +88,4 @@ export const authConfig = {
         signIn: '/auth/signin',
         signOut: '/auth/signout',
     },
-} satisfies AuthOptions;
+} satisfies NextAuthConfig;
