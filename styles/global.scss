@@ -6,3 +6,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --background: @apply text-gray-200;
+    --foreground: @apply text-gray-800;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: @apply text-gray-800;
+        --foreground: @apply text-gray-200;
+    }
+}
+
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+}
