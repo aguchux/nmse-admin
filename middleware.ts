@@ -1,5 +1,4 @@
 // middleware.ts
-import { verifyToken } from '@/libs/actions/token';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -21,18 +20,20 @@ export async function middleware(req: NextRequest) {
   if (!token) {
     return NextResponse.redirect(new URL('/auth/login', req.url));
   }
-  try {
-    const verified = await verifyToken(token);
-    if (!verified || !verified.payload.sub) {
-      console.error('Token verification failed:', verified);
-      return NextResponse.redirect(new URL('/auth/login', req.url));
-    }
-    // Token is valid; proceed with the request
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Token verification failed:', error);
-    return NextResponse.redirect(new URL('/auth/login', req.url));
-  }
+  return NextResponse.next();
+
+//   try {
+//     const verified = await verifyToken(token);
+//     if (!verified || !verified.payload.sub) {
+//       console.error('Token verification failed:', verified);
+//       return NextResponse.redirect(new URL('/auth/login', req.url));
+//     }
+//     // Token is valid; proceed with the request
+//     return NextResponse.next();
+//   } catch (error) {
+//     console.error('Token verification failed:', error);
+//     return NextResponse.redirect(new URL('/auth/login', req.url));
+//   }
 }
 
 // Apply middleware to all routes except those in the matcher below
