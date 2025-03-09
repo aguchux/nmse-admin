@@ -1,3 +1,3 @@
 export const mail = {
-    runtime: "edge",
+  runtime: 'edge',
 };

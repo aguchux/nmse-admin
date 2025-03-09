@@ -32,7 +32,7 @@ export type IAuthContextType = {
   user: unknown | null;
   isLogged: boolean;
   isBusy: boolean;
-}
+};
 
 export type DialogContentType = ReactNode | string | null;
 export type DalogSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -45,7 +45,6 @@ export interface IAppContextType {
   loading: boolean;
   ping?: boolean;
 }
-
 
 export interface IOTPVerified {
   id: string;

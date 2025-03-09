@@ -25,9 +25,7 @@ export default function AppLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body
-        className={`antialiased  bg-gray-200`}
-      >
+      <body className={`antialiased  bg-gray-200`}>
         <QueryClientProvider client={queryClient}>
           <AuthContextProvider>
             <Provider store={customStore}>

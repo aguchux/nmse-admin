@@ -1,11 +1,8 @@
-import { SignupScreen } from '@/components/auth/signup'
-import React from 'react'
-
+import { SignupScreen } from '@/components/auth/signup';
+import React from 'react';
 
 const SiginPage = () => {
-    return (
-        <SignupScreen />
-    )
-}
+  return <SignupScreen />;
+};
 
-export default SiginPage
+export default SiginPage;

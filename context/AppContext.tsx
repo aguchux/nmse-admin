@@ -8,7 +8,6 @@ export const AppContext = createContext<IAppContextType | undefined>(undefined);
 
 // Create a provider component
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-
   const [storage, setStorage] = useAppStore();
   const [state, setState] = useAppState();
 
@@ -20,7 +19,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         setState,
         storage,
         setStorage,
-        loading: false
+        loading: false,
       }}
     >
       {children}
