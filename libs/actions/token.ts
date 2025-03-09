@@ -3,8 +3,7 @@
 import { importX509, JWTPayload, jwtVerify, JWTVerifyResult } from 'jose';
 
 const firebaseProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID; // Ensure this is set in your env variables!
-const firebasePublicKeysUrl =
-  'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
+const firebasePublicKeysUrl = process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_KEYS_URL as string; // Ensure this is set in your env variables!
 
 // Simple in-memory caching for public keys (optional)
 let cachedKeys: Record<string, string> | null = null;
