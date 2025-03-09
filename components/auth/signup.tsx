@@ -1,10 +1,14 @@
 'use client';
 
+import { ApiCaller } from '@/api';
 import { ArrowLeft, EyeIcon, EyeOffIcon, Facebook, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 import { useSignup } from '@/libs/actions/auth';
+import { createFirebaseApp } from '@/libs/firebase/client';
+import { IUser } from '@/types';
+import { getAuth } from 'firebase/auth';
 import { toast } from 'react-hot-toast';
 import { LoadingSpinner } from '../loaders/loading-spinner';
 import AuthRightBox from './auth-right-box';
@@ -18,15 +22,31 @@ export const SignupScreen = () => {
 
   const signupMutation = useSignup();
 
+  const app = createFirebaseApp();
+  const auth = getAuth(app);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     signupMutation.mutate(
       { fullName, email, password },
       {
-        onSuccess: (data) => {
-          console.log('Signup successful', data);
-          toast.success('Signup successful!');
-          window.location.href = '/';
+        onSuccess: async (data) => {
+          const uid = data?.user?.uid;
+          ApiCaller.post<IUser>('/users/register', {
+            uid: uid,
+            fullName: fullName,
+            email: email,
+          }).then(async (createdUser) => {
+            // delete the user from firebase
+            // if user creation fails
+            if (!createdUser) {
+              if (!auth.currentUser) return;
+              await auth.currentUser.delete();
+              return;
+            }
+            toast.success('Signup successful!');
+            window.location.href = '/';
+          })
         },
         onError: (error: { response?: { data: string }; message: string }) => {
           console.error('Signup failed', error.response?.data || error.message);

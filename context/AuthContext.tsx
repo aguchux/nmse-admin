@@ -1,6 +1,10 @@
+'use client';
+
+import { ApiCaller } from '@/api';
 import { createFirebaseApp } from '@/libs/firebase/client';
-import { IAuthContextType } from '@/types';
+import { IAuthContextType, IUser } from '@/types';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
@@ -17,6 +21,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<unknown>(null);
   const [isBusy, setIsBusy] = useState<boolean>(true);
   const [isLogged, setIsLogged] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const app = createFirebaseApp();
@@ -26,8 +31,41 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         if (user) {
           const { uid, email, displayName, photoURL } = user;
           // pull user information from api/me
-          setUser(user);
+          ApiCaller.get<IUser>(`/users/me`).then((authUser) => {
+            if (!authUser) {
+              // logout firebase user
+              auth.signOut();
+              // redirect to login
+              router.push('/auth/signin');
+              return;
+            }
+            setUser({
+              ...authUser,
+              uid,
+              email,
+              fullName: displayName,
+              avatar: photoURL,
+            });
+            setIsLogged(true);
+          });
+           
+          // if (!authUser) {
+          //   // logout firebase user
+          //   await auth.signOut();
+          //   // clear session
+          //   await clearSession();
+          //   // redirect to login
+          //   router.push('/auth/signin');
+          //   return;
+          // }
           // pull user information from api/me
+          // setUser({
+          //   ...authUser,
+          //   uid,
+          //   email,
+          //   fullName: displayName,
+          //   avatar: photoURL,
+          // });
           setIsLogged(true);
         } else {
           setUser(null);
@@ -39,7 +77,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       }
     });
     return () => unsubscriber();
-  }, [setUser, setIsBusy, setIsLogged]);
+  }, [setUser, setIsBusy, setIsLogged, router]);
 
   return (
     <AuthContext.Provider

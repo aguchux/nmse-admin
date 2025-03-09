@@ -2,6 +2,7 @@
 // Middleware to verify JWT tokens in cookies
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { verifyToken } from './libs/actions/token';
 
 export async function middleware(req: NextRequest) {
     // Get the path from the URL
@@ -23,19 +24,19 @@ export async function middleware(req: NextRequest) {
     if (!token) {
         return NextResponse.redirect(new URL('/auth/signin', req.url));
     }
-    return NextResponse.next();
-    //   try {
-    //     const verified = await verifyToken(token);
-    //     if (!verified || !verified.payload.sub) {
-    //       console.error('Token verification failed:', verified);
-    //       return NextResponse.redirect(new URL('/auth/signin', req.url));
-    //     }
-    //     // Token is valid; proceed with the request
-    //     return NextResponse.next();
-    //   } catch (error) {
-    //     console.error('Token verification failed:', error);
-    //     return NextResponse.redirect(new URL('/auth/signin', req.url));
-    //   }
+    try {
+        const verified = await verifyToken(token);
+        if (!verified || !verified.payload) {
+            console.error('Token verification failed:', verified.payload);
+            return NextResponse.redirect(new URL('/auth/signin', req.url));
+        }
+        console.log('Token verified:', verified.payload);
+        // Token is valid; proceed with the request
+        return NextResponse.next();
+    } catch (error) {
+        console.error('Token verification failed:');
+        return NextResponse.redirect(new URL('/auth/signin', req.url));
+    }
 }
 
 // Apply middleware to all routes except those in the matcher below

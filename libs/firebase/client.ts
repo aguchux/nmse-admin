@@ -1,3 +1,5 @@
+"use client";
+
 import { getAnalytics } from 'firebase/analytics';
 import { getApps, initializeApp } from 'firebase/app';
 
@@ -12,6 +14,7 @@ export const createFirebaseApp = () => {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
+  
   if (getApps().length <= 0) {
     const app = initializeApp(clientCredentials);
     if (typeof window !== 'undefined') {
