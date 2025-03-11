@@ -45,7 +45,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
               uid,
               email,
               fullName: displayName,
-              avatar: photoURL,
+              avatar: photoURL
             });
             setIsLogged(true);
           });
@@ -58,7 +58,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setIsBusy(false);
       }
     });
-    return () => unsubscriber(); // unsubscribe on unmount
+    return () => unsubscriber();
   }, [setUser, setIsBusy, setIsLogged, router]);
 
   return (
