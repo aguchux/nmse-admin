@@ -31,6 +31,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         if (user) {
           const { uid, email, displayName, photoURL } = user;
           // pull user information from api/me
+          setIsBusy(true);
           ApiCaller.get<IUser>(`/users/me`).then((authUser) => {
             if (!authUser) {
               // logout firebase user
@@ -48,25 +49,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             });
             setIsLogged(true);
           });
-           
-          // if (!authUser) {
-          //   // logout firebase user
-          //   await auth.signOut();
-          //   // clear session
-          //   await clearSession();
-          //   // redirect to login
-          //   router.push('/auth/signin');
-          //   return;
-          // }
-          // pull user information from api/me
-          // setUser({
-          //   ...authUser,
-          //   uid,
-          //   email,
-          //   fullName: displayName,
-          //   avatar: photoURL,
-          // });
-          setIsLogged(true);
         } else {
           setUser(null);
         }
@@ -76,7 +58,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setIsBusy(false);
       }
     });
-    return () => unsubscriber();
+    return () => unsubscriber(); // unsubscribe on unmount
   }, [setUser, setIsBusy, setIsLogged, router]);
 
   return (

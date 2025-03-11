@@ -1,6 +1,6 @@
 //  import Axios
-import { getSession } from '@/libs/actions/session';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { getAuth } from 'firebase/auth';
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1',
@@ -15,12 +15,22 @@ export class ApiCaller {
     'Content-Type': 'application/json',
   };
   private static cachedToken: string | null = null;
+
+  private static async getToken(): Promise<string | null> {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
+    }
+    return null;
+  }
+
   private static async getHeaders(
     secure: boolean = true,
   ): Promise<Record<string, string>> {
     if (!secure) return this.defaultHeaders;
     if (!this.cachedToken) {
-      const accessToken = await getSession();
+      const accessToken = await this.getToken();
       this.cachedToken = accessToken as string;
     }
     // console.log("Token:", this.cachedToken);

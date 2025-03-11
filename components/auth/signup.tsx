@@ -46,7 +46,7 @@ export const SignupScreen = () => {
             }
             toast.success('Signup successful!');
             window.location.href = '/';
-          })
+          });
         },
         onError: (error: { response?: { data: string }; message: string }) => {
           console.error('Signup failed', error.response?.data || error.message);
