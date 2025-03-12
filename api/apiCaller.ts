@@ -22,7 +22,6 @@ export class ApiCaller {
     if (!secure) return this.defaultHeaders;
     if (!this.cachedToken) {
       const accessToken = await getSession();
-      console.log(accessToken);
       this.cachedToken = accessToken as string;
     }
     // console.log("Token:", this.cachedToken);

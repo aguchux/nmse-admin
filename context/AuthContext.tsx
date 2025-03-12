@@ -3,7 +3,13 @@
 import { ApiCaller } from '@/api';
 import { createFirebaseApp } from '@/libs/firebase/client';
 import { IAuthContextType, IUser } from '@/types';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  browserLocalPersistence,
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  signOut,
+} from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -18,7 +24,7 @@ export const AuthContext = createContext<IAuthContextType | undefined>(
 );
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [isBusy, setIsBusy] = useState<boolean>(true);
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const router = useRouter();
@@ -26,40 +32,49 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const app = createFirebaseApp();
     const auth = getAuth(app);
-    const unsubscriber = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (user) {
-          const { uid, email, displayName, photoURL } = user;
-          // pull user information from api/me
+
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        // Existing and future Auth states are now persisted in the current
+        const unsubscriber = onAuthStateChanged(auth, async (firebaseUser) => {
           setIsBusy(true);
-          ApiCaller.get<IUser>(`/users/me`).then((authUser) => {
-            if (!authUser) {
-              // logout firebase user
-              auth.signOut();
-              // redirect to login
-              router.push('/auth/signin');
-              return;
-            }
-            setUser({
-              ...authUser,
-              uid,
-              email,
-              fullName: displayName,
-              avatar: photoURL
+          if (firebaseUser) {
+            firebaseUser.reload().then(async () => {
+              try {
+                const { uid, email, displayName, photoURL } = firebaseUser;
+                const authUser = await ApiCaller.get<IUser>(`/users/me`);
+
+                if (!authUser) {
+                  await signOut(auth); // logout firebase user
+                  router.push('/auth/signin'); // redirect to login
+                  return;
+                }
+                setUser({
+                  ...authUser,
+                  uid: uid as string,
+                  email: email || authUser.email,
+                  fullName: displayName || authUser.fullName,
+                  avatar: photoURL || authUser.avatar,
+                });
+
+                setIsLogged(true);
+              } catch (error) {
+                console.error('Failed to fetch user:', error);
+              }
             });
-            setIsLogged(true);
-          });
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsBusy(false);
-      }
-    });
-    return () => unsubscriber();
-  }, [setUser, setIsBusy, setIsLogged, router]);
+          } else {
+            setUser(null);
+            setIsLogged(false);
+          }
+          setIsBusy(false);
+        });
+
+        return () => unsubscriber();
+      })
+      .catch((error) => {
+        console.error('Failed to set persistence:', error);
+      });
+  }, [router]);
 
   return (
     <AuthContext.Provider

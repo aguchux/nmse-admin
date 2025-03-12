@@ -26,12 +26,12 @@ export default function AppLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`antialiased  bg-gray-200`}>
-        <QueryClientProvider client={queryClient}>
-          <AuthContextProvider>
-            <Provider store={customStore}>
-              <DevTools store={customStore} />
+        <Provider store={customStore}>
+          <QueryClientProvider client={queryClient}>
+            <AuthContextProvider>
               <AppContextProvider>
                 <GlobalLoader />
+                <DevTools store={customStore} />
                 {children}
                 <Toaster
                   position="top-center"
@@ -66,9 +66,9 @@ export default function AppLayout({
                   }}
                 />
               </AppContextProvider>
-            </Provider>
-          </AuthContextProvider>
-        </QueryClientProvider>
+            </AuthContextProvider>
+          </QueryClientProvider>
+        </Provider>
       </body>
     </html>
   );

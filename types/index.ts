@@ -12,9 +12,11 @@ export interface IDocument {
 }
 
 export interface IUser extends IDocument {
+  uid?: string;
   fullName: string;
   email: string;
   mobile?: string;
+  avatar?: string;
   policy: IPolicy;
   role: string;
 }
