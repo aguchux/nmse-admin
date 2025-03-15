@@ -2,8 +2,7 @@
 // Middleware to verify JWT tokens in cookies
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { verifyToken } from './libs/actions/token';
-
+import { decrypt, Payload } from './libs/jwt';
 export async function middleware(req: NextRequest) {
   // Get the path from the URL
   const { pathname } = req.nextUrl;
@@ -27,9 +26,9 @@ export async function middleware(req: NextRequest) {
   }
   try {
     // Verify the token
-    const decodedToken = await verifyToken(token);
+    const decodedToken = await decrypt(token) as Payload;
     // Get the user from the API
-    if (!decodedToken) {
+    if (!decodedToken || !decodedToken.uid) {
       return NextResponse.redirect(new URL('/auth/signin', req.url));
     }
     return NextResponse.next();

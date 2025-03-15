@@ -5,7 +5,7 @@ const LandingPage = () => {
   const { isBusy, user } = useAuthContext();
   return (
     <>
-      <h1>Welcome {isBusy ? 'BUSY...' : ''}</h1>
+      <h1>Welcome {isBusy ? 'BUSY...' : JSON.stringify(user)}</h1>
     </>
   );
 };

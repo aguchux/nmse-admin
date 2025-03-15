@@ -1,3 +1,5 @@
+'use server';
+
 import { SignJWT, jwtVerify } from 'jose';
 export type Payload = {
   fullName: string;
@@ -13,8 +15,8 @@ export async function encrypt(payload: Payload): Promise<string> {
   const jwt = new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setIssuer('nextjs-auth')
-    .setAudience('nextjs-auth')
+    // .setIssuer('nextjs-auth')
+    // .setAudience('nextjs-auth')
     .setExpirationTime('2h')
     .sign(key);
   return jwt;

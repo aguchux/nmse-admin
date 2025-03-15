@@ -1,6 +1,8 @@
 //  import Axios
 import { getSession } from '@/libs/actions/session';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
+
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1',
@@ -21,7 +23,11 @@ export class ApiCaller {
   ): Promise<Record<string, string>> {
     if (!secure) return this.defaultHeaders;
     if (!this.cachedToken) {
-      const accessToken = await getSession();
+      const accessToken = await getSession() || Cookies.get('__session'); // Get the token from the session
+
+      alert(accessToken);
+      console.log(accessToken);
+
       this.cachedToken = accessToken as string;
     }
     // console.log("Token:", this.cachedToken);
