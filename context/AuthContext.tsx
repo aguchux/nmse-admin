@@ -42,6 +42,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             firebaseUser.reload().then(async () => {
               try {
                 const { uid, email, displayName, photoURL } = firebaseUser;
+
+                alert(JSON.stringify({ uid, email, displayName, photoURL }));
+                
                 const authUser = await ApiCaller.get<IUser>(`/users/me`);
 
                 if (!authUser) {
@@ -49,6 +52,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                   router.push('/auth/signin'); // redirect to login
                   return;
                 }
+                alert(JSON.stringify(authUser));
+
                 setUser({
                   ...authUser,
                   uid: uid as string,

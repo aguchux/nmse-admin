@@ -24,13 +24,12 @@ export class ApiCaller {
     if (!secure) return this.defaultHeaders;
     if (!this.cachedToken) {
       const accessToken = await getSession() || Cookies.get('__session'); // Get the token from the session
-
-      alert(accessToken);
-      console.log(accessToken);
-
       this.cachedToken = accessToken as string;
     }
-    // console.log("Token:", this.cachedToken);
+
+    alert(this.cachedToken);
+    console.log("Token:", this.cachedToken);
+
     return this.cachedToken
       ? { ...this.defaultHeaders, Authorization: `Bearer ${this.cachedToken}` }
       : this.defaultHeaders;
