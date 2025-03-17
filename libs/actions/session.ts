@@ -1,7 +1,11 @@
+"use client"
+
 // Code: Firebase session storage
 import { getAuth } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { encrypt, Payload } from '../jwt';
+
+const timeInHrs: number = 24; // 24 hours
 
 export const storeSession = async () => {
   const auth = getAuth();
@@ -16,11 +20,25 @@ export const storeSession = async () => {
     };
     const customToken = await encrypt(payLoad as Payload);
     Cookies.set('__session', customToken, {
-      secure: true,
-      sameSite: 'None'
+      expires: new Date(Date.now() + 1000 * 60 * 60 * timeInHrs),
+      path: '/',
+      domain: process.env.NODE_ENV === 'production' ? 'https://admin.nmseprep.com' : 'localhost',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+      sameSite: 'Strict',
     });
   }
 };
+
+export const storeToken = async (accessToken: string) => {
+  Cookies.set('__session', accessToken, {
+    expires: timeInHrs,
+    path: '/',
+    domain: process.env.NODE_ENV === 'production' ? '.nmseprep.com' : undefined,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
+  });
+};
+
 
 export const clearSession = async () => {
   const auth = getAuth();
@@ -28,6 +46,6 @@ export const clearSession = async () => {
   Cookies.remove('__session');
 };
 
-export const getSession = async () => {
+export const getSession = async (): Promise<string | undefined> => {
   return Cookies.get('__session');
 };

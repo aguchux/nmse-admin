@@ -17,7 +17,7 @@ export async function encrypt(payload: Payload): Promise<string> {
     .setIssuedAt()
     // .setIssuer('nextjs-auth')
     // .setAudience('nextjs-auth')
-    .setExpirationTime('2h')
+    .setExpirationTime('1h')
     .sign(key);
   return jwt;
 }

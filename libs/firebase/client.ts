@@ -1,7 +1,7 @@
 'use client';
 
 import { getAnalytics } from 'firebase/analytics';
-import { getApps, initializeApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 
 export const createFirebaseApp = () => {
   const clientCredentials = {
@@ -15,13 +15,31 @@ export const createFirebaseApp = () => {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
 
-  if (getApps().length <= 0) {
-    const app = initializeApp(clientCredentials);
-    if (typeof window !== 'undefined') {
-      if ('measurementId' in clientCredentials) {
-        getAnalytics();
-      }
-    }
-    return app;
+  // Ensure all required environment variables are set
+  if (
+    !clientCredentials.apiKey ||
+    !clientCredentials.authDomain ||
+    !clientCredentials.databaseURL ||
+    !clientCredentials.projectId ||
+    !clientCredentials.storageBucket ||
+    !clientCredentials.messagingSenderId ||
+    !clientCredentials.appId
+  ) {
+    throw new Error('Missing Firebase configuration in environment variables');
   }
+
+  // let app;
+  // if (getApps().length === 0) {
+  //   app = initializeApp(clientCredentials);
+  // } else {
+  //   app = getApps()[0];
+  // }
+
+  const app = initializeApp(clientCredentials);
+  if (typeof window !== 'undefined') {
+    if ('measurementId' in clientCredentials) {
+      getAnalytics(app);
+    }
+  }
+  return app;
 };

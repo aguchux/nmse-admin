@@ -1,12 +1,12 @@
 'use client';
 
-import { useAppContext } from '@/context/AppContext';
 import { enableGlobalLoader } from '@/config';
+import { useAuthContext } from '../../context/AuthContext';
 
 export const GlobalLoader = () => {
-  const { loading } = useAppContext();
+  const { isBusy } = useAuthContext();
   if (!enableGlobalLoader) return null;
-  if (!loading) return null;
+  if (!isBusy) return null;
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-[999] flex justify-center items-center">

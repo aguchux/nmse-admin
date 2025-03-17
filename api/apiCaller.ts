@@ -1,7 +1,7 @@
-//  import Axios
-import { getSession } from '@/libs/actions/session';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
+import cookies from 'js-cookie';
+
+
 
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
@@ -16,28 +16,24 @@ export class ApiCaller {
   private static defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
   };
-  private static cachedToken: string | null = null;
+
+  private static async getToken() {
+    return cookies.get('__session')
+  }
 
   private static async getHeaders(
     secure: boolean = true,
   ): Promise<Record<string, string>> {
     if (!secure) return this.defaultHeaders;
-    if (!this.cachedToken) {
-      const accessToken = await getSession() || Cookies.get('__session'); // Get the token from the session
-      this.cachedToken = accessToken as string;
-    }
 
-    alert(this.cachedToken);
-    console.log("Token:", this.cachedToken);
+    const accessToken = await this.getToken();
 
-    return this.cachedToken
-      ? { ...this.defaultHeaders, Authorization: `Bearer ${this.cachedToken}` }
+    return accessToken
+      ? { ...this.defaultHeaders, Authorization: `Bearer ${accessToken}` }
       : this.defaultHeaders;
   }
 
-  private static async handleResponse<T>(
-    response: AxiosResponse,
-  ): Promise<T | undefined> {
+  private static async handleResponse<T>(response: AxiosResponse): Promise<T> {
     return response.data as T;
   }
 
@@ -53,10 +49,7 @@ export class ApiCaller {
     }
   }
 
-  static async get<T>(
-    path: string,
-    secure: boolean = true,
-  ): Promise<T | undefined> {
+  static async get<T>(path: string, secure: boolean = true): Promise<T | undefined> {
     try {
       const response = await axiosInstance.get(path, {
         headers: await this.getHeaders(secure),
@@ -68,11 +61,7 @@ export class ApiCaller {
     }
   }
 
-  static async post<T>(
-    path: string,
-    data: unknown,
-    secure: boolean = true,
-  ): Promise<T | undefined> {
+  static async post<T>(path: string, data: unknown, secure: boolean = true): Promise<T | undefined> {
     try {
       const response = await axiosInstance.post(path, data, {
         headers: await this.getHeaders(secure),
@@ -84,10 +73,7 @@ export class ApiCaller {
     }
   }
 
-  static async delete<T>(
-    path: string,
-    secure: boolean = true,
-  ): Promise<T | undefined> {
+  static async delete<T>(path: string, secure: boolean = true): Promise<T | undefined> {
     try {
       const response = await axiosInstance.delete(path, {
         headers: await this.getHeaders(secure),
@@ -99,11 +85,7 @@ export class ApiCaller {
     }
   }
 
-  static async patch<T>(
-    path: string,
-    data: unknown,
-    secure: boolean = true,
-  ): Promise<T | undefined> {
+  static async patch<T>(path: string, data: unknown, secure: boolean = true): Promise<T | undefined> {
     try {
       const response = await axiosInstance.patch(path, data, {
         headers: await this.getHeaders(secure),

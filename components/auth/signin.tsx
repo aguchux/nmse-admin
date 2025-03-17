@@ -4,9 +4,10 @@ import { ArrowLeft, EyeIcon, EyeOffIcon, Facebook, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { useAppContext } from '@/context/AppContext';
+import { ApiCaller } from '@/api';
 import { useLogin } from '@/libs/actions/auth';
-import { storeSession } from '@/libs/actions/session';
+import { storeToken } from '@/libs/actions/session';
+import { UserCredential } from 'firebase/auth';
 import { toast } from 'react-hot-toast';
 import { LoadingSpinner } from '../loaders/loading-spinner';
 import AuthRightBox from './auth-right-box';
@@ -16,8 +17,6 @@ export default function SigninScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { storage, setStorage } = useAppContext();
-
   const loginMutation = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,10 +24,25 @@ export default function SigninScreen() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: async (data) => {
-          await storeSession();
-          toast.success('Login successful');
-          window.location.href = '/';
+        onSuccess: async (data: UserCredential) => {
+          if (!data) return;
+          const { user } = data;
+          const idToken = await user.getIdToken(true);
+          ApiCaller.post<{
+            accessToken: string
+          }>('/auth/login', {
+            uid: user.uid,
+            email: user.email,
+            fullName: user.displayName,
+            idToken: idToken,
+          }).then(async (response) => {
+            if (response) {
+              await storeToken(response.accessToken);
+              toast.success('Login successful');
+              window.location.href = '/';
+              return;
+            }
+          });
         },
         onError: (error: { response?: { data: string }; message: string }) => {
           console.error('Login failed', error.response?.data || error.message);
@@ -114,16 +128,16 @@ export default function SigninScreen() {
 
               <button
                 type="submit"
-                className="h-12 w-full  btn"
+                className="h-12 w-full btn"
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? (
-                  <div className="flex items-center gap-2">
+                  <span className=" flex flex-row justify-center items-center gap-2">
                     <LoadingSpinner className="h-5 w-5" />
-                    Signing in...
-                  </div>
+                    <span>Signing in...</span>
+                  </span>
                 ) : (
-                  'Sign in with Email'
+                  <span>Sign in with Email</span>
                 )}
               </button>
             </form>

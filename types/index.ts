@@ -31,7 +31,7 @@ export interface IPolicy extends IDocument {
 }
 
 export type IAuthContextType = {
-  user: unknown | null;
+  user: IUser | null;
   isLogged: boolean;
   isBusy: boolean;
 };
@@ -56,6 +56,7 @@ export interface IOTPVerified {
   mobileVerified: boolean;
   verified: boolean;
 }
+
 export interface IUserExists {
   id: string;
   userId: string;
