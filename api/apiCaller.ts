@@ -1,15 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import cookies from 'js-cookie';
 
-
-
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1',
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Ensure cookies and tokens work properly
+  withCredentials: true,
 } as AxiosRequestConfig);
 
 export class ApiCaller {
@@ -17,33 +15,32 @@ export class ApiCaller {
     'Content-Type': 'application/json',
   };
 
-  private static async getToken() {
-    return cookies.get('__session')
+  private static async getToken(): Promise<string | undefined> {
+    return cookies.get('__session');
   }
 
-  private static async getHeaders(
-    secure: boolean = true,
-  ): Promise<Record<string, string>> {
-    if (!secure) return this.defaultHeaders;
+  private static async getHeaders(secure: boolean = true): Promise<Record<string, string>> {
+    const headers = { ...this.defaultHeaders };
 
-    const accessToken = await this.getToken();
+    if (secure) {
+      const accessToken = await this.getToken();
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+      }
+    }
 
-    return accessToken
-      ? { ...this.defaultHeaders, Authorization: `Bearer ${accessToken}` }
-      : this.defaultHeaders;
+    headers['Access-Control-Allow-Origin'] = '*';
+
+    return headers;
   }
 
   private static async handleResponse<T>(response: AxiosResponse): Promise<T> {
     return response.data as T;
   }
 
-  private static handleError(error: unknown) {
+  private static handleError(error: unknown): void {
     if (axios.isAxiosError(error)) {
-      console.error(
-        'API Error:',
-        error.response?.status,
-        error.response?.data || error.message,
-      );
+      console.error('API Error:', error.response?.status, error.response?.data || error.message);
     } else {
       console.error('Unexpected API Error:', error);
     }
