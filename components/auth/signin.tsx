@@ -28,7 +28,7 @@ export default function SigninScreen() {
           const { user } = data;
           const idToken = await user.getIdToken(true);
 
-          await fetch('/auth/login', {
+          await fetch.post('/auth/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
