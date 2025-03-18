@@ -1,6 +1,6 @@
 'use client';
 
-import { ApiCaller } from '@/api';
+import { ApiFetcher } from '@/api';
 import { IAuthContextType, IUser } from '@/types';
 import { useRouter } from 'next/navigation';
 import {
@@ -22,7 +22,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useLayoutEffect(() => {
-    ApiCaller.get<IUser>("/auth/me").then((authUser) => {
+    ApiFetcher.get<IUser>("/auth/me").then((authUser) => {
       if (!authUser) {
         router.push('/auth/signin');
         return;
