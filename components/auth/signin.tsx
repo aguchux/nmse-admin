@@ -4,7 +4,6 @@ import { ArrowLeft, EyeIcon, EyeOffIcon, Facebook, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { ApiCaller } from '@/api';
 import { useLogin } from '@/libs/actions/auth';
 import { storeToken } from '@/libs/actions/session';
 import { UserCredential } from 'firebase/auth';
@@ -28,21 +27,45 @@ export default function SigninScreen() {
           if (!data) return;
           const { user } = data;
           const idToken = await user.getIdToken(true);
-          ApiCaller.post<{
-            accessToken: string
-          }>('/auth/login', {
-            uid: user.uid,
-            email: user.email,
-            fullName: user.displayName,
-            idToken: idToken,
+
+          await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              credentials: 'include',
+            },
+            body: JSON.stringify({
+              uid: user.uid,
+              email: user.email,
+              fullName: user.displayName,
+              idToken: idToken,
+            }),
           }).then(async (response) => {
-            if (response) {
-              await storeToken(response.accessToken);
+            if (response.ok) {
+              const { accessToken } = await response.json();
+              await storeToken(accessToken);
               toast.success('Login successful');
               window.location.href = '/';
               return;
             }
           });
+
+          // ApiCaller.post<{
+          //   accessToken: string
+          // }>('/auth/login', {
+          //   uid: user.uid,
+          //   email: user.email,
+          //   fullName: user.displayName,
+          //   idToken: idToken,
+          // }).then(async (response) => {
+          //   if (response) {
+          //     await storeToken(response.accessToken);
+          //     toast.success('Login successful');
+          //     window.location.href = '/';
+          //     return;
+          //   }
+          // });
+
         },
         onError: (error: { response?: { data: string }; message: string }) => {
           console.error('Login failed', error.response?.data || error.message);
