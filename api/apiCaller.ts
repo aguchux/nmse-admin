@@ -28,9 +28,6 @@ export class ApiCaller {
         headers['Authorization'] = `Bearer ${accessToken}`;
       }
     }
-
-    headers['Access-Control-Allow-Origin'] = '*';
-
     return headers;
   }
 
