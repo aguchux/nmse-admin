@@ -1,6 +1,16 @@
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import cookies from 'js-cookie';
 
-export class ApiFetcher {
+// Create an Axios instance
+export const axiosInstance: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+} as AxiosRequestConfig);
+
+export class apiFetcher {
   private static defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
   };
@@ -9,7 +19,7 @@ export class ApiFetcher {
     return cookies.get('__session');
   }
 
-  private static async getHeaders(secure: boolean = true): Promise<HeadersInit> {
+  private static async getHeaders(secure: boolean = true): Promise<Record<string, string>> {
     const headers = { ...this.defaultHeaders };
 
     if (secure) {
@@ -24,23 +34,23 @@ export class ApiFetcher {
     return headers;
   }
 
-  private static async handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json() as Promise<T>;
+  private static async handleResponse<T>(response: AxiosResponse): Promise<T> {
+    return response.data as T;
   }
 
   private static handleError(error: unknown): void {
-    console.error('API Error:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('API Error:', error.response?.status, error.response?.data || error.message);
+    } else {
+      console.error('Unexpected API Error:', error);
+    }
   }
 
   static async get<T>(path: string, secure: boolean = true): Promise<T | undefined> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1'}${path}`, {
-        method: 'GET',
+      const response = await axiosInstance.get(path, {
         headers: await this.getHeaders(secure),
-        credentials: secure ? 'include' : 'same-origin',
+        withCredentials: secure,
       });
       return await this.handleResponse<T>(response);
     } catch (error) {
@@ -50,11 +60,9 @@ export class ApiFetcher {
 
   static async post<T>(path: string, data: unknown, secure: boolean = true): Promise<T | undefined> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1'}${path}`, {
-        method: 'POST',
+      const response = await axiosInstance.post(path, data, {
         headers: await this.getHeaders(secure),
-        credentials: secure ? 'include' : 'same-origin',
-        body: JSON.stringify(data),
+        withCredentials: secure,
       });
       return await this.handleResponse<T>(response);
     } catch (error) {
@@ -64,10 +72,9 @@ export class ApiFetcher {
 
   static async delete<T>(path: string, secure: boolean = true): Promise<T | undefined> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1'}${path}`, {
-        method: 'DELETE',
+      const response = await axiosInstance.delete(path, {
         headers: await this.getHeaders(secure),
-        credentials: secure ? 'include' : 'same-origin',
+        withCredentials: secure,
       });
       return await this.handleResponse<T>(response);
     } catch (error) {
@@ -77,11 +84,9 @@ export class ApiFetcher {
 
   static async patch<T>(path: string, data: unknown, secure: boolean = true): Promise<T | undefined> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/v1'}${path}`, {
-        method: 'PATCH',
+      const response = await axiosInstance.patch(path, data, {
         headers: await this.getHeaders(secure),
-        credentials: secure ? 'include' : 'same-origin',
-        body: JSON.stringify(data),
+        withCredentials: secure,
       });
       return await this.handleResponse<T>(response);
     } catch (error) {

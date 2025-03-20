@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
   // Read token from cookies
-  const token = req.cookies.get('__session')?.value;
+  const token = req.cookies.get('__session')?.value.toString();
 
   if (!token) {
     return NextResponse.redirect(new URL('/auth/signin', req.url));

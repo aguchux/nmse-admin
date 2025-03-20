@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  // headers & Cors
+  
+  // headers & Cors
 };
 
 export default nextConfig;
