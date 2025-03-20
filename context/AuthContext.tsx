@@ -23,7 +23,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   useLayoutEffect(() => {
     ApiCaller.get<IUser>("/auth/me").then((authUser) => {
-      alert(JSON.stringify(authUser));
       if (!authUser) {
         router.push('/auth/signin');
         return;
