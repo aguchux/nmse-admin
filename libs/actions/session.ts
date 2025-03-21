@@ -22,9 +22,9 @@ export const storeSession = async () => {
     Cookies.set('__session', customToken, {
       expires: new Date(Date.now() + 1000 * 60 * 60 * timeInHrs),
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? 'https://admin.nmseprep.com' : 'localhost',
+      domain: process.env.NODE_ENV === 'production' ? '.nmseprep.com' : 'localhost',
       secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite: 'Strict',
+      sameSite: 'Lax',
     });
   }
 };
