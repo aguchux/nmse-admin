@@ -1,5 +1,6 @@
 'use client';
 
+import { clearSession } from "@/libs/actions/session";
 import { useMutation } from '@tanstack/react-query';
 import {
   Auth,
@@ -58,6 +59,22 @@ export const useSignup = () => {
         return userCredential as UserCredential;
       } catch (error) {
         throw new Error('Signup failed. Please try again');
+      }
+    },
+  });
+};
+
+
+// Logout Mutation Hook	
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: async () => {
+      try {
+        await auth.signOut();
+        await clearSession();
+        
+      } catch (error) {
+        throw new Error('Logout failed');
       }
     },
   });

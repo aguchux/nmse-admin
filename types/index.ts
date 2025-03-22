@@ -37,7 +37,7 @@ export type IAuthContextType = {
 };
 
 export type DialogContentType = ReactNode | string | null;
-export type DalogSize = 'sm' | 'md' | 'lg' | 'xl';
+export type DalogSize = 'md' | 'lg' | 'xl';
 export interface IAppContextType {
   theme: string;
   state: IAppState;

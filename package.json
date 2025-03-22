@@ -34,6 +34,7 @@
     "react-loading-skeleton": "^3.5.0",
     "react-spinners": "^0.15.0",
     "recharts": "^2.15.1",
+    "slugify": "^1.6.6",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "unstorage": "^1.15.0",
