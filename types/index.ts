@@ -3,38 +3,13 @@ import { SetStateAction } from 'jotai';
 import { Dispatch, ReactNode } from 'react';
 export * from './schemas/schemas';
 
-export interface IDocument {
-  id: string;
-  createdAt: Date;
-  createdBy?: string;
-  updatedAt: Date;
-  updatedBy?: string;
-}
-
-export interface IUser extends IDocument {
-  uid?: string;
-  fullName: string;
-  email: string;
-  mobile?: string;
-  avatar?: string;
-  policy: IPolicy;
-  role: string;
-}
-
-export interface IPolicy extends IDocument {
-  user: IUser;
-  userId: string;
-  create: boolean;
-  read: boolean;
-  update: boolean;
-  delete: boolean;
-}
 
 export type IAuthContextType = {
   user: IUser | null;
   isLogged: boolean;
   isBusy: boolean;
 };
+
 
 export type DialogContentType = ReactNode | string | null;
 export type DalogSize = 'md' | 'lg' | 'xl';
@@ -47,7 +22,50 @@ export interface IAppContextType {
   loading: boolean;
   ping?: boolean;
 }
+export interface IDocument {
+  id: string;
+  enabled?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
+export interface IUser extends IDocument {
+  uid?: string;
+  fullName: string;
+  email: string;
+  mobile?: string;
+  avatar?: string;
+  policy: IPolicy;
+  role: UserRole;
+  wallet: IWallet;
+  notifications: INotification[];
+  subscriptions: ISubscription[];
+  payments: IPayment[];
+}
+
+export interface IPolicy extends IDocument {
+  user: IUser;
+  userId: string;
+  create: boolean;
+  read: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
+export interface ICollege extends IDocument {
+  collegeCode: string;
+  collegeName: string;
+  description: string;
+  examinations: IExamination[];
+}
+
+export interface IExamination extends IDocument {
+  title: string;
+  college: ICollege;
+  collegeId: string;
+  examinationCountries: IExaminationCountry[];
+  subscriptions: ISubscription[];
+}
 export interface IOTPVerified {
   id: string;
   email: string;
@@ -64,5 +82,231 @@ export interface IUserExists {
   mobile: string;
   firstName: string;
   lastName: string;
-  role: string;
+  role: UserRole;
+}
+
+export interface ILog extends IDocument {
+  level: string;
+  message: string;
+  timestamp: Date;
+  metadata?: Record<string, string>;
+  user?: IUser;
+  userId?: string;
+  authId?: string;
+}
+
+export interface IEmailOtp extends IDocument {
+  email: string;
+  otp: string;
+  otpExpiry: Date;
+  verified: boolean;
+}
+
+export interface IMobileOtp extends IDocument {
+  otp: string;
+  mobile: string;
+  otpExpiry: Date;
+  verified: boolean;
+}
+
+export interface IPasswordResetOtp extends IDocument {
+  email: string;
+  otp: string;
+  otpExpiry: Date;
+  used: boolean;
+}
+
+export interface IPolicy extends IDocument {
+  user: IUser;
+  userId: string;
+  create: boolean;
+  read: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
+export interface IUser extends IDocument {
+  email: string;
+  mobile?: string;
+  fullName: string;
+  role: UserRole;
+  policy: IPolicy;
+  notifications: INotification[];
+  subscriptions: ISubscription[];
+  payments: IPayment[];
+  wallet: IWallet;
+  logs: ILog[];
+}
+
+export interface INotification extends IDocument {
+  title: string;
+  message: string;
+  type: NotificationType;
+  read: boolean;
+  userId: string;
+  user: IUser;
+}
+
+export interface IExaminationCountry extends IDocument {
+  examination: IExamination;
+  examinationId: string;
+  country: ICountry;
+  countryId: string;
+}
+
+export interface ICollege extends IDocument {
+  collegeCode: string;
+  collegeName: string;
+  description: string;
+  examinations: IExamination[];
+}
+
+export interface IExamination extends IDocument {
+  title: string;
+  examinationCountries: IExaminationCountry[];
+  subscriptions: ISubscription[];
+  college: ICollege;
+  collegeId: string;
+}
+
+export interface ISpecialty extends IDocument {
+  name: string;
+  subjects: ISubject[];
+}
+
+export interface ISubject extends IDocument {
+  name: string;
+  description?: string;
+  specialty: ISpecialty;
+  specialtyId: string;
+  cases: ICase[];
+  questions: IQuestion[];
+}
+
+export interface ICase extends IDocument {
+  description?: string;
+  source: CaseSource;
+  subject: ISubject;
+  subjectId: string;
+  questions: IQuestion[];
+}
+
+export interface IQuestion extends IDocument {
+  question: string;
+  case: ICase;
+  caseId: string;
+  subject: ISubject;
+  subjectId: string;
+  questionOptions: IQuestionOptions[];
+  questionAnswers: IQuestionAnswer[];
+}
+
+export interface IQuestionOptions extends IDocument {
+  option: string;
+  isCorrect: boolean;
+  correctStatement?: string;
+  incorrectStatement?: string;
+  question: IQuestion;
+  questionId: string;
+  questionAnswers: IQuestionAnswer[];
+}
+
+export interface IQuestionAnswer extends IDocument {
+  answer: string;
+  question?: IQuestion;
+  questionId?: string;
+  correctOption: IQuestionOptions;
+  correctOptionId: string;
+}
+
+export interface IStandardReference extends IDocument {
+  title: string;
+  headNote?: string;
+  footNote?: string;
+  referenceRanges: IReferenceRange[];
+}
+
+export interface IReferenceRange extends IDocument {
+  referenceName: string;
+  referenceValue: string;
+  standardReference: IStandardReference;
+  standardReferenceId: string;
+}
+
+export interface ISubscription extends IDocument {
+  user: IUser;
+  userId: string;
+  examination: IExamination;
+  examinationId: string;
+  amount: number;
+  startDate: Date;
+  endDate: Date;
+  subscribed: boolean;
+  payments: IPayment[];
+}
+
+export interface IPayment extends IDocument {
+  user: IUser;
+  userId: string;
+  subscription: ISubscription;
+  subscriptionId: string;
+  amount: number;
+  currency: string;
+  recurring: boolean;
+  paymentDate: Date;
+  paymentStatus: PaymentStatus;
+}
+
+export interface ICountry extends IDocument {
+  name: string;
+  code: string;
+  examinationCountries: IExaminationCountry[];
+}
+
+export interface IWallet extends IDocument {
+  balance: number;
+  user: IUser;
+  userId: string;
+  transactions: ITransaction[];
+}
+
+export interface ITransaction extends IDocument {
+  amount: number;
+  currency: string;
+  type: TransactionType;
+  status: string;
+  metadata?: Record<string, string>;
+  wallet: IWallet;
+  walletId: string;
+}
+
+// Enums
+export enum TransactionType {
+  NONE = 'NONE',
+  CREDIT = 'CREDIT',
+  DEBIT = 'DEBIT',
+}
+
+export enum UserRole {
+  SUPERSDMIN = 'SUPERSDMIN',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  GUEST = 'GUEST',
+}
+
+export enum NotificationType {
+  INFO = 'INFO',
+  SYSTEM = 'SYSTEM',
+  NEWS = 'NEWS',
+}
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}
+
+export enum CaseSource {
+  AI = 'AI',
+  SYSTEM = 'SYSTEM',
 }

@@ -63,13 +63,13 @@ export default function AuthLayout({
           </ul>
         </div>
         <div className="space-y-1">
-          <Link href="#" className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2">
+          <Link href="/profile" className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2">
             <FaUser className="inline-block" />
             <span>
               Profile
             </span>
           </Link>
-          <Link href="#" className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2">
+          <Link href="/settings" className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2">
             <FaCog className="inline-block" />
             <span>Settings</span>
           </Link>

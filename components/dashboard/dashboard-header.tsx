@@ -1,6 +1,6 @@
 import { useAuthContext } from '@/context/AuthContext'
 import { IUser } from '@/types'
-import UserAvatar from './user-avatar'
+import UserAvatar from './dashboard-user-avatar'
 
 const DashboardHeader = () => {
     const { user, isBusy } = useAuthContext()

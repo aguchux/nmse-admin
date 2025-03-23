@@ -1,5 +1,5 @@
 import { IconType } from "react-icons";
-import { FaAd, FaListOl, FaUsers } from "react-icons/fa";
+import { FaAd, FaListOl, FaMoneyCheck, FaQuestion, FaUsers } from "react-icons/fa";
 type Menu = {
     id: string;
     title: string;
@@ -28,7 +28,7 @@ export const mainMenus : Menu[]  = [
             {
                 id: 'signups',
                 title: 'Signups',
-                link: '/signups',
+                link: '/users/signups',
                 icon: FaListOl,
                 enabled: true,
                 children: [],
@@ -52,4 +52,70 @@ export const mainMenus : Menu[]  = [
             },
         ],
     },
+    {
+        id:'bank',	
+        title: 'Questions Bank',
+        link: '/bank',
+        icon: FaQuestion,
+        enabled: true,
+        children: [
+            {
+                id: 'questions',
+                title: 'List questions',
+                link: '/banks',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+            {
+                id: 'categories',
+                title: 'Categories',
+                link: '/banks/categories',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+        ],
+    },
+    {
+        id:'subscriptions',
+        title: 'Subscriptions',
+        link: '/subscriptions',
+        icon: FaMoneyCheck,
+        enabled: true,
+        children: [
+            {
+                id: 'plans',
+                title: 'List plans',
+                link: '/subscriptions',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+            {
+                id: 'subscriptions',
+                title: 'List subscriptions',
+                link: '/subscriptions/subscriptions',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+        ],
+    },{
+        id:'tickets',
+        title: 'Support & Tickets',
+        link: '/tickets',
+        icon: FaQuestion,
+        enabled: true,
+        children: [
+            {
+                id: 'tickets',
+                title: 'List tickets',
+                link: '/tickets',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+        ],
+    }
 ] as const;
