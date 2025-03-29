@@ -8,11 +8,14 @@ export type IAuthContextType = {
   user: IUser | null;
   isLogged: boolean;
   isBusy: boolean;
+  policy: Partial<IPolicy>;
+  wallet: Partial<IWallet> | null;
 };
 
 
-export type DialogContentType = ReactNode | string | null;
+export type DialogContentType = ReactNode;
 export type DalogSize = 'md' | 'lg' | 'xl';
+
 export interface IAppContextType {
   theme: string;
   state: IAppState;

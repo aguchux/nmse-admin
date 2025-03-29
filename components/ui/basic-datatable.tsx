@@ -36,13 +36,7 @@ export const BasicDataTable = <T extends object>({
 }: UiBasicDataTableProps<T>) => {
   const [selectedRow, setSelectedRow] = useState<string>('');
   const queryClient = useQueryClient();
-  const { user, isBusy } = useAuthContext();
-  const policy = user?.policy || {
-    create: false,
-    read: false,
-    update: false,
-    delete: false,
-  };
+  const { user, isBusy, policy } = useAuthContext();
   const router = useRouter();
 
   const extendedColumns: Column<T & { id?: string }>[] = [
@@ -141,8 +135,7 @@ export const BasicDataTable = <T extends object>({
   };
 
   const onView = async (id: string) => {
-    console.log(`View ${resource}/${id}`);
-    await router.push(`/dashboard/${resource}/${id}`);
+    await router.push(`/${resource}/${id}`);
   };
   const onUpdate = async (id: string) => {
     // check if the user has permission to update
@@ -154,8 +147,7 @@ export const BasicDataTable = <T extends object>({
       );
       return;
     }
-    console.log(`Update ${resource}/${id}`);
-    await router.push(`/dashboard/${resource}/${id}/edit`);
+    await router.push(`/${resource}/${id}/edit`);
   };
 
   const onDelete = async (id: string) => {

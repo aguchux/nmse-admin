@@ -5,7 +5,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import { ISubscription } from '@/types';
 import { Column } from '@material-table/core';
 import { useQuery } from '@tanstack/react-query';
-import { BasicDataTable } from '../ui/basic-datatable';
+import { BasicDataTable } from '@/components/ui/basic-datatable';
 const ListSubscriptions = () => {
     const { user, isBusy } = useAuthContext();
     const {

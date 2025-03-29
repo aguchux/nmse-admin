@@ -1,7 +1,7 @@
 'use client';
 
 import { ApiCaller } from '@/api';
-import { IAuthContextType, IUser } from '@/types';
+import { IAuthContextType, IPolicy, IUser, IWallet } from '@/types';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -19,6 +19,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isBusy, setIsBusy] = useState<boolean>(true);
   const [isLogged, setIsLogged] = useState<boolean>(false);
+  const [policy, setPolicy] = useState<Partial<IPolicy>>({
+    create: false,
+    read: false,
+    update: false,
+    delete: false,
+  });
+  const [wallet, setWallet] = useState<Partial<IWallet>>({
+    balance: 0,
+  });
   const router = useRouter();
 
   useLayoutEffect(() => {
@@ -27,6 +36,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         router.push('/auth/signin');
         return;
       }
+      const policy = authUser.policy;
+      const wallet = authUser.wallet;
+      setPolicy(policy);
+      setWallet(wallet);
       setUser(authUser);
       setIsLogged(true);
     }).catch((error) => {
@@ -41,6 +54,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
+        policy,
+        wallet,
         isBusy,
         isLogged,
       }}

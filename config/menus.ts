@@ -25,10 +25,27 @@ export const mainMenus : Menu[]  = [
                 enabled: true,
                 children: [],
             },
+        ],
+    },
+    {
+        id: 'examinations',
+        title: 'Examinations',
+        link: '/examinations',
+        icon: FaAd,
+        enabled: true,
+        children: [
             {
-                id: 'signups',
-                title: 'Signups',
-                link: '/users/signups',
+                id: 'examinations',
+                title: 'List examinations',
+                link: '/examinations',
+                icon: FaListOl,
+                enabled: true,
+                children: [],
+            },
+            {
+                id: 'examinations/create',
+                title: 'Create examination',
+                link: '/examinations/create',
                 icon: FaListOl,
                 enabled: true,
                 children: [],
@@ -80,42 +97,43 @@ export const mainMenus : Menu[]  = [
     {
         id:'subscriptions',
         title: 'Subscriptions',
-        link: '/subscriptions',
+        link: '/plans',
         icon: FaMoneyCheck,
         enabled: true,
         children: [
             {
                 id: 'plans',
-                title: 'List plans',
-                link: '/subscriptions',
+                title: 'Manage plans',
+                link: '/plans',
                 icon: FaListOl,
                 enabled: true,
                 children: [],
             },
             {
                 id: 'subscriptions',
-                title: 'List subscriptions',
-                link: '/subscriptions/subscriptions',
+                title: 'Manage subscriptions',
+                link: '/plans/subscriptions',
                 icon: FaListOl,
                 enabled: true,
                 children: [],
             },
         ],
-    },{
-        id:'tickets',
-        title: 'Support & Tickets',
-        link: '/tickets',
-        icon: FaQuestion,
-        enabled: true,
-        children: [
-            {
-                id: 'tickets',
-                title: 'List tickets',
-                link: '/tickets',
-                icon: FaListOl,
-                enabled: true,
-                children: [],
-            },
-        ],
-    }
+    },
+    // {
+    //     id:'tickets',
+    //     title: 'Support & Tickets',
+    //     link: '/tickets',
+    //     icon: FaQuestion,
+    //     enabled: true,
+    //     children: [
+    //         {
+    //             id: 'tickets',
+    //             title: 'List tickets',
+    //             link: '/tickets',
+    //             icon: FaListOl,
+    //             enabled: true,
+    //             children: [],
+    //         },
+    //     ],
+    // }
 ] as const;

@@ -1,24 +1,30 @@
-p{
+p {
     @apply text-gray-800 text-base font-normal;
 }
+
 h1 {
     @apply text-3xl font-bold text-gray-800;
 }
+
 h2 {
     @apply text-2xl font-bold text-gray-800;
 }
+
 h3 {
     @apply text-xl font-bold text-gray-800;
 }
+
 h4 {
     @apply text-lg font-bold text-gray-800;
 }
+
 h5 {
     @apply text-base font-bold text-gray-800;
 }
 
 .button {
     @apply px-4 min-h-10 rounded;
+
     // disabled
     &:disabled {
         @apply bg-gray-300 text-gray-500 cursor-not-allowed opacity-50;
@@ -62,7 +68,7 @@ input[type="radio"] {
 
 button {
     &:disabled {
-        @apply  cursor-not-allowed opacity-50;
+        @apply cursor-not-allowed opacity-50;
     }
 }
 
@@ -89,4 +95,22 @@ a.btn {
     &:disabled {
         @apply bg-gray-300 text-gray-500 cursor-not-allowed;
     }
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"] {
+    @apply bg-white focus:bg-gray-50 border border-gray-400 w-full text-base text-gray-800 focus:text-black rounded min-h-10 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:shadow-xl focus:border-transparent px-4 py-1;
+}
+
+input[type="password"] {
+    @apply bg-white focus:bg-gray-50 border border-gray-400 w-full text-base text-gray-800 focus:text-black rounded min-h-10 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:shadow-xl focus:border-transparent px-4 py-1;
 }
