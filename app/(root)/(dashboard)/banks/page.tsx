@@ -1,5 +1,5 @@
 import ListQuestionBanks from "@/components/banks/ListQuestionBanks"
-import DivContainer from "@/components/ui/container"
+import {DivContainer} from "@/components/ui/container"
 
 const BanksPage = () => {
     return (
