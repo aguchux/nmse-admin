@@ -2,7 +2,7 @@
 "use client";
 
 import { ApiCaller } from "@/api";
-import DivContainer from "@/components/ui/container";
+import {DivContainerFluid} from "@/components/ui/container";
 import ViewUser from "@/components/users/ViewUser";
 import { IUser } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -23,9 +23,9 @@ const ViewUserPage = () => {
         return <div className="flex justify-center items-center h-full">Loading...</div>;
     }
     return (
-        <DivContainer>
+        <DivContainerFluid>
             <ViewUser user={user as IUser} />
-        </DivContainer>
+        </DivContainerFluid>
     )
 }
 

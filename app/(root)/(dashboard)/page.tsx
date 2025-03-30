@@ -1,7 +1,7 @@
 'use client';
 
 import DashboardStats from "@/components/dashboard/dashboard-stats";
-import DivContainer from "@/components/ui/container";
+import {DivContainer} from "@/components/ui/container";
 import { useAppDialog } from "@/context/DialogContext";
 
 export default function Dashboard() {

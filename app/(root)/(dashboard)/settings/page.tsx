@@ -1,4 +1,4 @@
-import DivContainer from "@/components/ui/container"
+import {DivContainer} from "@/components/ui/container"
 
 const SettingsPage = () => {
     return (

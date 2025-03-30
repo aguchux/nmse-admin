@@ -1,5 +1,5 @@
 import ListPlans from "@/components/plans/ListPlans"
-import DivContainer from "@/components/ui/container"
+import {DivContainer} from "@/components/ui/container"
 
 const PlansPage = () => {
     return (

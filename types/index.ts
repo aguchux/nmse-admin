@@ -44,6 +44,15 @@ export interface IUser extends IDocument {
   notifications: INotification[];
   subscriptions: ISubscription[];
   payments: IPayment[];
+  devices: IDevice[];
+}
+
+export interface IDevice extends IDocument {
+  deviceId: string;
+  deviceType: string;
+  deviceToken: string;
+  user: IUser;
+  userId: string;
 }
 
 export interface IPolicy extends IDocument {
