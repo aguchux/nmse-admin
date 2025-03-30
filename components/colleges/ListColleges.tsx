@@ -7,7 +7,7 @@ import { Column } from '@material-table/core';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { FaPlus } from 'react-icons/fa';
-import { DataTable } from '../ui/datatable';
+import { BasicDataTable } from '../ui/basic-datatable';
 
 const ListColleges = () => {
     const { user, isBusy } = useAuthContext();
@@ -27,8 +27,19 @@ const ListColleges = () => {
 
     const columns: Column<ICollege>[] = [
         {
-            title: 'College Name',
+            title: 'Name',
             field: 'collegeName',
+        },
+        {
+            title: 'Code',
+            field: 'collegeCode',
+        },
+        {
+            title: 'Description',
+            field: 'description',
+            render: (rowData) => {
+                return <span>{rowData.description || '-'}</span>;
+            }
         }
     ];
 
@@ -48,7 +59,7 @@ const ListColleges = () => {
                     Add New
                 </Link>
             </div>
-            <DataTable<ICollege>
+            <BasicDataTable<ICollege>
                 resource="colleges"
                 data={colleges ?? []}
                 loading={busy}

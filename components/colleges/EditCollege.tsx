@@ -1,17 +1,43 @@
 'use client';
-import { ApiCaller } from "@/api";
-import { ICollege } from "@/types";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { TitleText } from "../ui/title";
-//new college 
-const AddCollege = () => {
-    const [collegeName, setCollegeName] = useState('')
-    const [collegeCode, setCollegeCode] = useState('')
-    const [collegeDescription, setCollegeDescription] = useState('')
-    const [busy, setBusy] = useState(false)
+
+import { ApiCaller } from '@/api';
+import { ICollege } from '@/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { TitleText } from '../ui/title';
+
+const EditCollege = () => {
+    const { id } = useParams()
+    const [collegeName, setCollegeName] = React.useState('')
+    const [collegeCode, setCollegeCode] = React.useState('')
+    const [collegeDescription, setCollegeDescription] = React.useState('')
+
+    const [busy, setBusy] = React.useState(false)
     const router = useRouter()
+    const queryClient = useQueryClient()
+
+    // Fetch college data
+    const { data: college, isLoading } = useQuery({
+        queryKey: ['college', id],
+        queryFn: async () => {
+            const res = await ApiCaller.get<ICollege>(`/colleges/${id}`)
+            return res
+        },
+        enabled: !!id,
+    })
+
+    useEffect(() => {
+        if (college) {
+            setCollegeName(college.collegeName)
+            setCollegeCode(college.collegeCode)
+            setCollegeDescription(college.description)
+        }
+    }, [college])
+
+    const isBusy = isLoading || busy
+
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -22,20 +48,20 @@ const AddCollege = () => {
         }
         setBusy(true)
         try {
-            const college = await ApiCaller.post<ICollege>('/colleges', {
+            const college = await ApiCaller.patch<ICollege>(`/colleges/${id}`, {
                 collegeName,
                 collegeCode,
                 description: collegeDescription,
             });
             if (college) {
-                toast.success('College created successfully')
+                toast.success('College updated successfully')
                 setCollegeName('')
                 setCollegeCode('')
                 setCollegeDescription('')
                 // Optionally redirect or update the UI after successful creation
                 await router.push('/colleges')
             } else {
-                toast.error('Failed to create college')
+                toast.error('Failed to update college')
             }
         }
         catch (error) {
@@ -46,6 +72,7 @@ const AddCollege = () => {
             setBusy(false)
         }
     }
+
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <TitleText>Create College</TitleText>
@@ -53,14 +80,14 @@ const AddCollege = () => {
                 <label htmlFor="collegeName">College Name</label>
                 <input type="text" id="collegeName" placeholder="Enter college name"
                     value={collegeName} onChange={(e) => setCollegeName(e.target.value)}
-                    required minLength={3} maxLength={150} pattern="[A-Za-z0-9\s]+" title="Only alphanumeric characters and spaces are allowed." disabled={busy}
+                    required minLength={3} maxLength={150} pattern="[A-Za-z0-9\s]+" title="Only alphanumeric characters and spaces are allowed." disabled={isBusy}
                 />
             </div>
             <div className="flex flex-col">
                 <label htmlFor="collegeCode">College Code</label>
                 <input type="text" id="collegeName" placeholder="Enter college code"
                     value={collegeCode} onChange={(e) => setCollegeCode(e.target.value)}
-                    required minLength={3} maxLength={50} pattern="[A-Za-z0-9\s]+" title="Only alphanumeric characters and spaces are allowed." disabled={busy}
+                    required minLength={3} maxLength={50} pattern="[A-Za-z0-9\s]+" title="Only alphanumeric characters and spaces are allowed." disabled={isBusy}
                 />
             </div>
             <div className="flex flex-col">
@@ -68,12 +95,12 @@ const AddCollege = () => {
                 <textarea id="collegeDescription" className='p-4' placeholder="Enter college description"
                     value={collegeDescription} onChange={(e) => setCollegeDescription(e.target.value)}
                     rows={3} cols={50} maxLength={500} minLength={10} required
-                    disabled={busy}
+                    disabled={isBusy}
                 ></textarea>
             </div>
             <div className="flex flex-col">
-                <button disabled={busy} className='btn'>
-                    {busy ? 'Creating College...' : 'Create College'}
+                <button disabled={isBusy} className='btn'>
+                    {busy ? 'Updating College...' : 'Update College'}
                 </button>
             </div>
 
@@ -81,4 +108,4 @@ const AddCollege = () => {
     )
 }
 
-export default AddCollege
+export default EditCollege

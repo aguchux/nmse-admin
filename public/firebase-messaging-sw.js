@@ -21,3 +21,14 @@ self.addEventListener("message", (event) => {
     }
   });
   
+
+  self.addEventListener('notificationclick', (event) => {
+    console.log('Notification clicked:', event.notification);
+    // Close the notification
+    event.notification.close()
+    // Open a new window or focus the existing window
+    event.waitUntil(
+      clients.openWindow("https://your-app-url.com/specific-page")  // Replace with the page you want to navigate to
+    );
+  });
+  

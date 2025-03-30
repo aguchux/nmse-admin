@@ -11,7 +11,6 @@ const FCMProvider = (): null => {
                 .register("/firebase-messaging-sw.js")
                 .then((registration) => {
                     console.log("Service Worker registered:", registration);
-
                     // Send Firebase Config to Service Worker
                     if (registration.active) {
                         registration.active.postMessage({

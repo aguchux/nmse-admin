@@ -1,3 +1,5 @@
+import { ApiCaller } from "@/api";
+import { IDevice } from "@/types";
 import { getMessaging, getToken, Messaging, onMessage } from "firebase/messaging";
 import { createFirebaseApp } from "./client";
 
@@ -10,22 +12,17 @@ if (typeof window !== "undefined") {
 
 export const sendTokenToServer = async (token: string) => {
     try {
-        const response = await fetch("/api/store-fcm-token", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token }),
-        });
-
-        if (!response.ok) {
+        const device = await ApiCaller.post<IDevice>("/device", {token});
+        if (!device) {
             throw new Error("Failed to store token");
         }
-
-        console.log("FCM Token stored successfully");
+        console.log("FCM Token stored successfully",device);
     } catch (error) {
         console.error("Error storing FCM Token:", error);
     }
 };
 export const requestNotificationPermission = async (): Promise<string | null> => {
+    
     try {
         const permission = await Notification.requestPermission();
         if (permission === "granted" && messaging) {
@@ -61,3 +58,8 @@ export const onMessageListener = (): Promise<unknown> =>
             });
         }
     });
+
+
+
+
+    

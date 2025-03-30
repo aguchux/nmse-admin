@@ -2,10 +2,10 @@
 
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { mainMenus } from "@/config";
-import { useAuthContext } from "@/context/AuthContext";
+import useFCMNotifications from "@/hooks/use-fcm-notifications";
 import { useLogout } from "@/libs/actions/auth";
 import Link from "next/link";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCog, FaUser, FaUserLock } from "react-icons/fa";
 
 export default function AuthLayout({
@@ -13,8 +13,15 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user, isBusy } = useAuthContext();
   const [selectedMenu, setSelectedMenu] = useState('');
+
+  const { fcmToken, isNotificationAllowed } = useFCMNotifications();
+  useLayoutEffect(() => {
+    if (isNotificationAllowed) {
+      console.log('Push notifications are enabled!');
+    }
+  }, [isNotificationAllowed]);
+
 
   const logoutMutation = useLogout();
   const handleLogout = () => {
