@@ -109,6 +109,8 @@ input[type="datetime-local"],
 input[type="month"],
 input[type="week"],
 input[type="time"],
+select,
+input[type="color"],
 textarea {
     @apply bg-white focus:bg-gray-50 border border-gray-400 w-full text-base text-gray-800 focus:text-black rounded min-h-10 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:shadow-xl focus:border-transparent px-4 py-1;
 }

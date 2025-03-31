@@ -1,22 +1,25 @@
 'use client';
 
 import { ApiCaller } from '@/api';
-import { ICollege } from '@/types';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { ICollege, IExamination } from '@/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { TitleText } from '../ui/title';
 
-const CreateExamination = () => {
+const EditExamination = () => {
+  const { id } = useParams();
+
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [collegeId, setCollegeId] = useState<string>('');
-  const [busy, setBusy] = useState<boolean>(false);
 
+  const [busy, setBusy] = React.useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const { data: colleges, isLoading } = useQuery({
+  const { data: colleges, isLoading: isLoadingColleges } = useQuery({
     queryKey: ['colleges'],
     queryFn: async () => {
       const response = await ApiCaller.get<ICollege[]>('/colleges');
@@ -24,6 +27,27 @@ const CreateExamination = () => {
     },
   });
 
+  // Fetch examination data
+  const { data: examination, isLoading } = useQuery({
+    queryKey: ['examination', id],
+    queryFn: async () => {
+      const res = await ApiCaller.get<IExamination>(`/examinations/${id}`);
+      return res;
+    },
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (examination) {
+      setTitle(examination.title);
+      setDescription(examination.description);
+      setCollegeId(examination.collegeId);
+    }
+  }, [examination]);
+
+  const isBusy = isLoading || busy;
+
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (busy) return;
@@ -33,19 +57,28 @@ const CreateExamination = () => {
     }
     setBusy(true);
     try {
-      const response = await ApiCaller.post('/examinations', {
-        title,
-        description,
-        collegeId,
-      });
-      if (response) {
-        toast.success('Examination created successfully!');
-        router.push('/examinations');
+      const examination = await ApiCaller.patch<IExamination>(
+        `/examinations/${id}`,
+        {
+          title,
+          description,
+          collegeId,
+        },
+      );
+      if (examination) {
+        toast.success('Examination updated successfully');
+        await queryClient.invalidateQueries({
+          queryKey: ['examination', id],
+        });
+        setTitle('');
+        setDescription('');
+        setCollegeId('');
       } else {
-        toast.error('Failed to create examination. Please try again.');
+        toast.error('Failed to update examination');
       }
     } catch (error) {
-      toast.error('An error occurred while creating the examination.');
+      console.error('Error updating examination:', error);
+      toast.error('Error updating examination');
     } finally {
       setBusy(false);
     }
@@ -53,7 +86,7 @@ const CreateExamination = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <TitleText>Create Examination</TitleText>
+      <TitleText>Update Examination</TitleText>
       <div className="flex flex-col">
         <label htmlFor="title">Examination Title</label>
         <input
@@ -95,10 +128,10 @@ const CreateExamination = () => {
           value={collegeId}
           onChange={(e) => setCollegeId(e.target.value)}
           required
-          disabled={busy || isLoading}
+          disabled={busy || isLoadingColleges}
         >
           <option value="" disabled>
-            {isLoading ? 'Loading...' : 'Select College'}
+            {isLoadingColleges ? 'Loading...' : 'Select College'}
           </option>
           {colleges?.map((college) => (
             <option key={college.id} value={college.id}>
@@ -110,11 +143,11 @@ const CreateExamination = () => {
 
       <div className="flex flex-col">
         <button disabled={busy} className="btn">
-          {busy ? 'Creating Examination...' : 'Create Examination'}
+          {busy ? 'Updating Examination...' : 'Update Examination'}
         </button>
       </div>
     </form>
   );
 };
 
-export default CreateExamination;
+export default EditExamination;

@@ -3,7 +3,6 @@ import { SetStateAction } from 'jotai';
 import { Dispatch, ReactNode } from 'react';
 export * from './schemas/schemas';
 
-
 export type IAuthContextType = {
   user: IUser | null;
   isLogged: boolean;
@@ -11,7 +10,6 @@ export type IAuthContextType = {
   policy: Partial<IPolicy>;
   wallet: Partial<IWallet> | null;
 };
-
 
 export type DialogContentType = ReactNode;
 export type DalogSize = 'md' | 'lg' | 'xl';
@@ -71,13 +69,6 @@ export interface ICollege extends IDocument {
   examinations: IExamination[];
 }
 
-export interface IExamination extends IDocument {
-  title: string;
-  college: ICollege;
-  collegeId: string;
-  examinationCountries: IExaminationCountry[];
-  subscriptions: ISubscription[];
-}
 export interface IOTPVerified {
   id: string;
   email: string;
@@ -175,7 +166,7 @@ export interface ICollege extends IDocument {
 
 export interface IExamination extends IDocument {
   title: string;
-  examinationCountries: IExaminationCountry[];
+  description: string;
   subscriptions: ISubscription[];
   college: ICollege;
   collegeId: string;
