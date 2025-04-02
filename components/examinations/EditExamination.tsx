@@ -1,6 +1,7 @@
 'use client';
 
 import { ApiCaller } from '@/api';
+import { useAppDialog } from '@/context/DialogContext';
 import { ICollege, IExamination } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
@@ -8,9 +9,10 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { TitleText } from '../ui/title';
 
-const EditExamination = () => {
+const EditExamination = ({ id: _id }: { id?: string }) => {
   const { id } = useParams();
-
+  const idParam = _id || id;
+  const { closeDialog, isOpen } = useAppDialog();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [collegeId, setCollegeId] = useState<string>('');
@@ -29,12 +31,12 @@ const EditExamination = () => {
 
   // Fetch examination data
   const { data: examination, isLoading } = useQuery({
-    queryKey: ['examination', id],
+    queryKey: ['examination', idParam],
     queryFn: async () => {
-      const res = await ApiCaller.get<IExamination>(`/examinations/${id}`);
+      const res = await ApiCaller.get<IExamination>(`/examinations/${idParam}`);
       return res;
     },
-    enabled: !!id,
+    enabled: !!idParam,
   });
 
   useEffect(() => {
@@ -58,7 +60,7 @@ const EditExamination = () => {
     setBusy(true);
     try {
       const examination = await ApiCaller.patch<IExamination>(
-        `/examinations/${id}`,
+        `/examinations/${idParam}`,
         {
           title,
           description,
@@ -68,8 +70,14 @@ const EditExamination = () => {
       if (examination) {
         toast.success('Examination updated successfully');
         await queryClient.invalidateQueries({
-          queryKey: ['examination', id],
+          queryKey: ['examination', idParam],
         });
+        await queryClient.invalidateQueries({
+          queryKey: ['examinations'],
+        });
+        if (isOpen) {
+          closeDialog();
+        }
         setTitle('');
         setDescription('');
         setCollegeId('');

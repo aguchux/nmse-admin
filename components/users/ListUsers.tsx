@@ -7,6 +7,8 @@ import { IUser } from '@/types';
 import { Column } from '@material-table/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BasicDataTable } from '../ui/basic-datatable';
+import EditUser from './EditUser';
+import ViewUser from './ViewUser';
 
 const ListUsers = () => {
     const queryClient = useQueryClient();
@@ -99,19 +101,14 @@ const ListUsers = () => {
                 resource="users"
                 data={users ?? []}
                 loading={busy}
+                useDialog={true}
+                viewComponent={(id) => <ViewUser id={id} />}
+                editComponent={(id) => <EditUser id={id} />}
                 columns={columns}
                 title="Manage Users"
                 key={`users`}
             />
         </>
-    )
-}
-
-const Dialoge = () => {
-    return (
-        <div>
-            <h1>Dialoge</h1>
-        </div>
     )
 }
 

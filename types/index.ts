@@ -174,12 +174,13 @@ export interface IExamination extends IDocument {
 
 export interface ISpecialty extends IDocument {
   name: string;
+  description: string;
   subjects: ISubject[];
 }
 
 export interface ISubject extends IDocument {
   name: string;
-  description?: string;
+  description: string;
   specialty: ISpecialty;
   specialtyId: string;
   cases: ICase[];

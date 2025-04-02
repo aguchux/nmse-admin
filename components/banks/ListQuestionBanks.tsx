@@ -36,6 +36,7 @@ const ListQuestionBanks = () => {
             data={questions ?? []}
             loading={busy}
             columns={columns}
+            useDialog={true}
             title="Manage Questions"
             key={`questions`}
         />

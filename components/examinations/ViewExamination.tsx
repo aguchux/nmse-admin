@@ -6,18 +6,19 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
-const ViewExamination = () => {
+const ViewExamination = ({ id:_id }: { id?: string }) => {
   const { id } = useParams();
+  const idParam = _id || id;
   const [busy, setBusy] = React.useState(false);
 
   // Fetch college data
   const { data: examination, isLoading } = useQuery({
-    queryKey: ['examination', id],
+    queryKey: ['examination', idParam],
     queryFn: async () => {
-      const res = await ApiCaller.get<IExamination>(`/examinations/${id}`);
+      const res = await ApiCaller.get<IExamination>(`/examinations/${idParam}`);
       return res;
     },
-    enabled: !!id,
+    enabled: !!idParam,
   });
 
   const isBusy = isLoading || busy;

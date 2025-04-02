@@ -1,23 +1,16 @@
-import DialogBox from '@/context/dialog';
+import DialogBox from '@/components/dialog';
 import { DalogSize, DialogContentType } from '@/types';
 import React, { createContext, ReactNode, useContext } from 'react';
 
 type AppDialogContextType = {
   title: string;
+  isOpen: boolean;
   openDialog: (dialog: {
     title: string;
     content: DialogContentType;
-    buttonOK?: string;
-    buttonOkAction?: () => void;
-    buttonCancel?: string;
-    size?: DalogSize;
   }) => void;
   closeDialog: () => void;
-  isOpen: boolean;
   content: ReactNode | string | null;
-  buttonOK?: string | null;
-  buttonOkAction?: () => void;
-  buttonCancel?: string | null;
   size?: DalogSize;
 };
 
@@ -26,20 +19,21 @@ export const AppDialogContext = createContext<AppDialogContextType | undefined>(
 );
 
 export const AppDialogProvider = ({ children }: { children: ReactNode }) => {
-
   const [isOpen, setIsOpen] = React.useState(false);
   const [content, setContent] = React.useState<DialogContentType>(null);
-  const [title, setTitle] = React.useState<string>("Ojio Dialog");
-  const [size, setSize] = React.useState<DalogSize>("md");
+  const [title, setTitle] = React.useState<string>('Ojio Dialog');
+  const [size, setSize] = React.useState<DalogSize>('md');
 
   const openDialog = (dialog: {
     title: string;
     content: DialogContentType;
+    buttonOK?: string;
+    buttonCancel?: string;
     size?: DalogSize;
   }) => {
-    setTitle(dialog.title || "Ojio Dialog Box");
+    setTitle(dialog.title || 'Ojio Dialog');
     setContent(dialog.content as DialogContentType);
-    setSize(dialog.size as DalogSize);
+    setSize(dialog.size || 'md');
     setIsOpen(true);
   };
 

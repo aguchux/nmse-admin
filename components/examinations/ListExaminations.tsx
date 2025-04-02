@@ -5,9 +5,10 @@ import { useAuthContext } from '@/context/AuthContext';
 import { IExamination } from '@/types';
 import { Column } from '@material-table/core';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import { FaPlus } from 'react-icons/fa';
 import { BasicDataTable } from '../ui/basic-datatable';
+import CreateExamination from './CreateExamination';
+import EditExamination from './EditExamination';
+import ViewExamination from './ViewExamination';
 
 const ListExaminations = () => {
   const { user, isBusy } = useAuthContext();
@@ -41,30 +42,22 @@ const ListExaminations = () => {
         ) : (
           <span className="text-red-500">No Subscriptions</span>
         );
-      }
-    }
+      },
+    },
   ];
 
   const busy = isLoading || isFetching || isBusy;
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h2></h2>
-        <Link
-          href={`/examinations/create`}
-          aria-label="Add New Record"
-          onClick={() => {}}
-          className="text-white bg-blue-500 hover:bg-blue-700 p-2 flex items-center"
-        >
-          <FaPlus size={15} className="mr-2" />
-          Add New
-        </Link>
-      </div>
       <BasicDataTable<IExamination>
         resource="examinations"
         data={examinations ?? []}
         loading={busy}
+        useDialog={true}
+        addComponent={<CreateExamination />}
+        editComponent={(id) => <EditExamination id={id} />}
+        viewComponent={(id) => <ViewExamination id={id} />}
         columns={columns}
         title="Manage Examinations"
         key={`examinations`}

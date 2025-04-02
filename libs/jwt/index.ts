@@ -6,6 +6,8 @@ export type Payload = {
   email: string;
   uid: string;
   idToken: string;
+  deviceToken?: string;
+  [key: string]: unknown;
 };
 
 const sessionJwtSecret = process.env.NEXTAUTH_JWT_SECRET || 'secrete';
