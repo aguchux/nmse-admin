@@ -24,7 +24,7 @@ const EditUserPage = () => {
     }
     return (
         <DivContainerFluid>
-            <EditUser user={user as IUser} />
+            <EditUser />
         </DivContainerFluid>
     )
 }
