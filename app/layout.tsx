@@ -9,7 +9,6 @@ import 'jotai-devtools/styles.css';
 import { Toaster } from 'react-hot-toast';
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../styles/global.scss';
-import FCMProvider from '@/context/FCMProvider';
 
 const queryClient = new QueryClient();
 const customStore = createStore();
@@ -31,7 +30,7 @@ export default function AppLayout({
             <AuthContextProvider>
               <AppDialogProvider>
                 <GlobalLoader />
-                <FCMProvider />
+                {/* <FCMProvider /> */}
                 {/* <DevTools store={customStore} /> */}
                 {children}
                 <Toaster
