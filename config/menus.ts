@@ -2,6 +2,7 @@ import { IconType } from 'react-icons';
 import {
   FaAd,
   FaListOl,
+  FaMedkit,
   FaMoneyCheck,
   FaPrescription,
   FaQuestion,
@@ -121,7 +122,7 @@ export const mainMenus: Menu[] = [
         id: 'examinations',
         title: 'List examinations',
         link: '/examinations',
-        icon: FaListOl,
+        icon: FaMedkit,
         enabled: true,
         children: [],
       },
@@ -177,7 +178,7 @@ export const mainMenus: Menu[] = [
       },
       {
         id: 'subscriptions',
-        title: 'Manage subscriptions',
+        title: 'Subscriptions',
         link: '/plans/subscriptions',
         icon: FaListOl,
         enabled: true,
