@@ -27,8 +27,15 @@ const ListSubjects = () => {
 
   const columns: Column<ISubject>[] = [
     {
-      title: 'Name',
+      title: 'Subject',
       field: 'name',
+    },
+    {
+      title: 'Specialty',
+      field: 'specialty.name',
+      render: (rowData) => {
+        return <span>{rowData.specialty?.name || '-'}</span>;
+      },
     },
     {
       title: 'Description',
