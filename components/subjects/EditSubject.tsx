@@ -38,12 +38,12 @@ const EditSubject = ({ id: subjectId }: { id?: string }) => {
   });
 
   useEffect(() => {
-    if (subject) {
+    if (subject && !isLoadingSpecialties) {
       setName(subject.name);
       setDescription(subject.description);
-      setSpecialtyId(subject.specialtyId);
+      setSpecialtyId(subject.specialty.id);
     }
-  }, [subject]);
+  }, [subject, isLoadingSpecialties]);
 
   const isBusy = isLoading || busy;
 
