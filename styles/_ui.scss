@@ -146,7 +146,7 @@ input[type="password"] {
 
 
 .leftBox {
-    @apply w-1/4 bg-gray-900 h-full hidden md:flex flex-col justify-between shadow-md fixed inset-y-0 left-0 overflow-y-auto p-4;
+    @apply w-1/5 bg-gray-900 h-full hidden md:flex flex-col justify-between shadow-md fixed inset-y-0 left-0 overflow-y-auto p-4;
 }
 
 .rightBox {
