@@ -32,7 +32,7 @@ export default function AuthLayout({
   return (
     <div className="flex h-screen justify-between items-stretch bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-900 text-white p-4 flex flex-col justify-between">
+      <aside className="leftBox">
         <div>
           <h1 className="text-2xl text-white font-bold my-6">[NMSE].Admin</h1>
           <ul className="space-y-1">
@@ -127,7 +127,7 @@ export default function AuthLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="rightBox">
         <DashboardHeader />
         {/* Content */}
         {children}

@@ -88,19 +88,7 @@ export default function Dashboard() {
       <div className="p-4 w-full flex flex-col gap-4">
         <DashboardStats />
       </div>
-      <div className="p-4 w-full flex flex-col gap-4">
-        <button
-          onClick={() =>
-            openDialog({
-              title: 'Dialog Title',
-              content: <div>Dialog Content</div>,
-            })
-          }
-          className="btn"
-        >
-          launch dialog
-        </button>
-      </div>
+
       <DivContainer>
         <form
           onSubmit={onSubmit}
