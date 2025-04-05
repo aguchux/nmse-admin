@@ -1,8 +1,9 @@
 'use client';
 
 import { ApiCaller } from '@/api';
+import { useAppDialog } from '@/context/DialogContext';
 import { ISpecialty, ISubject } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,6 +15,8 @@ const AddSubject = () => {
   const [specialtyId, setSpecialtyId] = React.useState('');
   const [busy, setBusy] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { closeDialog, isOpen } = useAppDialog();
 
   const { data: specialties, isLoading } = useQuery({
     queryKey: ['specialties'],
@@ -42,7 +45,15 @@ const AddSubject = () => {
         toast.success('Subject created successfully');
         setName('');
         setDescription('');
-        await router.push('/subjects');
+        setSpecialtyId('');
+        await queryClient.invalidateQueries({
+          queryKey: ['subjects'],
+        });
+        if (isOpen) {
+          closeDialog();
+        } else {
+          await router.push('/subjects');
+        }
       } else {
         toast.error('Failed to create Subject');
       }
@@ -77,7 +88,7 @@ const AddSubject = () => {
         <textarea
           id="description"
           className="p-4"
-          placeholder="Enter college description"
+          placeholder="Enter subject description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
@@ -90,7 +101,7 @@ const AddSubject = () => {
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="college">Select Specialty</label>
+        <label htmlFor="specialty">Select Specialty</label>
         <select
           id="specialty"
           value={specialtyId}
@@ -99,7 +110,7 @@ const AddSubject = () => {
           disabled={busy || isLoading}
         >
           <option value="" disabled>
-            {isLoading ? 'Loading...' : 'Select College'}
+            {isLoading ? 'Loading...' : 'Select Specialty'}
           </option>
           {specialties?.map((specialty) => (
             <option key={specialty.id} value={specialty.id}>

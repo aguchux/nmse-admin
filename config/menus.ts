@@ -8,8 +8,10 @@ import {
   FaQuestion,
   FaSchool,
   FaUsers,
+  FaCog,
 } from 'react-icons/fa';
-type Menu = {
+
+export type Menu = {
   id: string;
   title: string;
   link: string;
@@ -19,6 +21,14 @@ type Menu = {
 };
 
 export const mainMenus: Menu[] = [
+  {
+    id:'dashboard',
+    title: 'Dashboard',
+    link: '/',
+    icon:FaCog,
+    enabled: true,
+    children: [],
+  },
   {
     id: 'users',
     title: 'Users & Signups',

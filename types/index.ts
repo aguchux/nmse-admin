@@ -65,6 +65,7 @@ export interface IPolicy extends IDocument {
 export interface ICollege extends IDocument {
   collegeCode: string;
   collegeName: string;
+  specialties: ISpecialty[];
   description: string;
   examinations: IExamination[];
 }
@@ -161,6 +162,7 @@ export interface ICollege extends IDocument {
   collegeCode: string;
   collegeName: string;
   description: string;
+  specialties: ISpecialty[];
   examinations: IExamination[];
 }
 
@@ -170,11 +172,15 @@ export interface IExamination extends IDocument {
   subscriptions: ISubscription[];
   college: ICollege;
   collegeId: string;
+  specialty: ISpecialty;
+  specialtyId: string;
 }
 
 export interface ISpecialty extends IDocument {
   name: string;
   description: string;
+  college: ICollege;
+  collegeId: string;
   subjects: ISubject[];
 }
 

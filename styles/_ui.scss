@@ -81,6 +81,31 @@ a.btn {
     }
 }
 
+a.link {
+    @apply text-[#0C2B57] hover:text-[#0C2B57]/70 hover:underline cursor-pointer;
+
+    &:disabled {
+        @apply text-gray-500 cursor-not-allowed;
+    }
+
+    &:hover {
+        @apply text-[#0C2B57]/40;
+    }
+}
+
+
+.links {
+    @apply text-[#0C2B57] hover:text-[#0C2B57]/70 hover:underline cursor-pointer;
+
+    &:disabled {
+        @apply text-gray-500 cursor-not-allowed;
+    }
+
+    &:hover {
+        @apply text-[#0C2B57]/40;
+    }
+}
+
 .btn {
     @apply bg-[#0C2B57]/90 hover:bg-[#0C2B57]/70 hover:text-gray-300 text-white px-4 py-1 rounded transition-all duration-300 ease-in-out;
 

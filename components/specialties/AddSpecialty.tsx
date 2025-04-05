@@ -1,18 +1,33 @@
 'use client';
 
 import { ApiCaller } from '@/api';
-import { ISpecialty } from '@/types';
+import { useAppDialog } from '@/context/DialogContext';
+import { ICollege, ISpecialty } from '@/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { TitleText } from '../ui/title';
+
 //new college
 const AddSpecialty = () => {
+  const { closeDialog, isOpen } = useAppDialog();
+  const queryClient = useQueryClient();
   const [name, setName] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [collegeId, setCollegeId] = useState<string>('');
 
   const [busy, setBusy] = useState(false);
   const router = useRouter();
+
+  const { data: colleges, isLoading } = useQuery({
+    queryKey: ['colleges'],
+    queryFn: async () => {
+      const response = await ApiCaller.get<ICollege[]>('/colleges');
+      return response || [];
+    },
+  });
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,12 +41,21 @@ const AddSpecialty = () => {
       const specialty = await ApiCaller.post<ISpecialty>('/specialties', {
         name,
         description,
+        collegeId,
       });
       if (specialty) {
         toast.success('Specialty created successfully');
         setName('');
         setDescription('');
-        await router.push('/specialties');
+        setCollegeId('');
+        await queryClient.invalidateQueries({
+          queryKey: ['specialties'],
+        });
+        if (isOpen) {
+          closeDialog();
+        } else {
+          await router.push('/specialties');
+        }
       } else {
         toast.error('Failed to create Specialty');
       }
@@ -77,6 +101,27 @@ const AddSpecialty = () => {
           disabled={busy}
         ></textarea>
       </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="college">Select College (Code)</label>
+        <select
+          id="college"
+          value={collegeId}
+          onChange={(e) => setCollegeId(e.target.value)}
+          required
+          disabled={busy || isLoading}
+        >
+          <option value="" disabled>
+            {isLoading ? 'Loading...' : 'Select College'}
+          </option>
+          {colleges?.map((college) => (
+            <option key={college.id} value={college.id}>
+              {college.collegeName} ({college.collegeCode})
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex flex-col">
         <button disabled={busy} className="btn">
           {busy ? 'Creating Specialty...' : 'Create Specialty'}

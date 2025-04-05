@@ -2,7 +2,7 @@
 
 import { ApiCaller } from '@/api';
 import { useAppDialog } from '@/context/DialogContext';
-import { ICollege, IExamination } from '@/types';
+import { ICollege, IExamination, ISpecialty } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -16,8 +16,14 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [collegeId, setCollegeId] = useState<string>('');
+  const [specialtyId, setSpecialtyId] = useState<string>('');
 
-  const [busy, setBusy] = React.useState(false);
+  const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
+
+  const [busy, setBusy] = useState<boolean>(false);
+  const [lBusy, setLbusy] = useState<boolean>(false);
+  const [mBusy, setMbusy] = useState<boolean>(false);
+
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -44,8 +50,22 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
       setTitle(examination.title);
       setDescription(examination.description);
       setCollegeId(examination.collegeId);
+      setSpecialtyId(examination.specialtyId);
     }
   }, [examination]);
+
+  useEffect(() => {
+    //ensure coolegeId is sellected
+    if (isLoadingColleges || !colleges || !collegeId) return;
+    setLbusy(true);
+    const getCollegeById = colleges?.find(
+      (college) => college.id === collegeId,
+    );
+    if (getCollegeById) {
+      setSpecialties(getCollegeById.specialties);
+    }
+    setLbusy(false);
+  }, [colleges, isLoadingColleges, collegeId]);
 
   const isBusy = isLoading || busy;
 
@@ -65,6 +85,7 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
           title,
           description,
           collegeId,
+          specialtyId,
         },
       );
       if (examination) {
@@ -78,6 +99,7 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
         if (isOpen) {
           closeDialog();
         }
+        
         setTitle('');
         setDescription('');
         setCollegeId('');
@@ -128,7 +150,6 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
           disabled={busy}
         ></textarea>
       </div>
-
       <div className="flex flex-col">
         <label htmlFor="college">Select College (Code)</label>
         <select
@@ -143,7 +164,27 @@ const EditExamination = ({ id: _id }: { id?: string }) => {
           </option>
           {colleges?.map((college) => (
             <option key={college.id} value={college.id}>
-              {college.collegeName} ({college.collegeCode})
+              {college.collegeCode}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="specialty">Select Specialty</label>
+        <select
+          id="specialty"
+          value={specialtyId}
+          onChange={(e) => setSpecialtyId(e.target.value)}
+          required
+          disabled={lBusy || !specialties}
+        >
+          <option value="" disabled>
+            {lBusy ? 'Loading...' : 'Select Specialty'}
+          </option>
+          {specialties?.map((specialty) => (
+            <option key={specialty.id} value={specialty.id}>
+              {specialty.name}
             </option>
           ))}
         </select>

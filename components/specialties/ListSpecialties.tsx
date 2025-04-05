@@ -37,6 +37,13 @@ const ListSpecialties = () => {
         return <span>{rowData.description || '-'}</span>;
       },
     },
+    {
+      title: 'College',
+      field: 'college.name',
+      render: (rowData) => {
+        return <span>{rowData?.college?.collegeName || '-'}</span>;
+      },
+    },
   ];
 
   const busy = isLoading || isFetching || isBusy;

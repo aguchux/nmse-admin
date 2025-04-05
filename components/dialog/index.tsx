@@ -20,9 +20,15 @@ const DialogBox = ({
           className={`bg-gray-100 p-6 rounded-lg shadow-lg w-96 flex flex-col`}
         >
           <div className="flex justify-between items-center w-full clear-both">
-            <h2 className="text-xl font-bold text-gray-600 border-b-4 border-b-red-600">
-              {title}
-            </h2>
+            {title ? (
+              <h2 className="text-xl font-bold text-gray-600 border-b-4 border-b-red-600">
+                {title}
+              </h2>
+            ) : (
+              <>
+                <span></span>
+              </>
+            )}
             <button
               type="button"
               onClick={closeDialog}

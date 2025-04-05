@@ -2,10 +2,10 @@
 
 import { ApiCaller } from '@/api';
 import { useAppDialog } from '@/context/DialogContext';
-import { ISpecialty } from '@/types';
+import { ICollege, ISpecialty } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { TitleText } from '../ui/title';
 
@@ -15,10 +15,22 @@ const EditSpecialty = ({ id: specialtyId }: { id?: string }) => {
   const { closeDialog, isOpen } = useAppDialog();
   const [name, setName] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [collegeId, setCollegeId] = useState<string>('');
 
   const [busy, setBusy] = React.useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+
+
+
+  const { data: colleges, isLoading:isLoadingColleges } = useQuery({
+    queryKey: ['colleges'],
+    queryFn: async () => {
+      const response = await ApiCaller.get<ICollege[]>('/colleges');
+      return response || [];
+    },
+  });
+
 
   const { data: specialty, isLoading } = useQuery({
     queryKey: ['specialty', specialtyIdParam],
@@ -117,6 +129,28 @@ const EditSpecialty = ({ id: specialtyId }: { id?: string }) => {
           disabled={isBusy}
         ></textarea>
       </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="college">Select College (Code)</label>
+        <select
+          id="college"
+          value={collegeId}
+          onChange={(e) => setCollegeId(e.target.value)}
+          required
+          disabled={busy || isLoadingColleges}
+        >
+          <option value="" disabled>
+            {isLoadingColleges ? 'Loading...' : 'Select College'}
+          </option>
+          {colleges?.map((college) => (
+            <option key={college.id} value={college.id}>
+              {college.collegeName} ({college.collegeCode})
+            </option>
+          ))}
+        </select>
+      </div>
+
+
       <div className="flex flex-col">
         <button disabled={isBusy} className="btn">
           {busy ? 'Updating Specialty...' : 'Update Specialty'}

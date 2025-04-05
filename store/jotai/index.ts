@@ -1,3 +1,4 @@
+import { mainMenus, Menu } from '@/config';
 import { atom, createStore, useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
@@ -6,11 +7,13 @@ const jotaiStore = createStore();
 export interface IAppState {
   loading: boolean;
   ping?: number;
+  selectedMenu: Menu;
 }
 
 const initialState: IAppState = {
   loading: false,
   ping: 0,
+  selectedMenu: mainMenus[0],
 };
 
 export interface IAppStore {

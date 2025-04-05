@@ -203,6 +203,9 @@ export const BasicDataTable = <T extends object>({
           await queryClient.invalidateQueries({
             queryKey: [resource, user?.id],
           });
+          await queryClient.invalidateQueries({
+            queryKey: [`${resource}`],
+          });
           await Swal.fire(
             'Deleted!',
             'The record has been deleted.',

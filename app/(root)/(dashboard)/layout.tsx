@@ -3,22 +3,16 @@
 import DashboardHeader from '@/components/dashboard/dashboard-header';
 import { mainMenus } from '@/config';
 import { useLogout } from '@/libs/actions/auth';
+import { useAppState } from '@/store';
 import Link from 'next/link';
-import { useState } from 'react';
-import {
-  FaChevronDown,
-  FaChevronUp,
-  FaCog,
-  FaUser,
-  FaUserLock,
-} from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaUser, FaUserLock } from 'react-icons/fa';
 
 export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [selectedMenu, setSelectedMenu] = useState('');
+  const [appState, setAppState] = useAppState();
 
   // const { fcmToken, isNotificationAllowed } = useFCMNotifications();
   // useLayoutEffect(() => {
@@ -42,65 +36,85 @@ export default function AuthLayout({
         <div>
           <h1 className="text-2xl text-white font-bold my-6">[NMSE].Admin</h1>
           <ul className="space-y-1">
-            <li className="py-2 px-3 flex flex-row justify-start items-center gap-2 text-gray-500 hover:bg-gray-800/70 hover:text-white cursor-pointer rounded">
-              <FaCog className="inline-block" />
-              <Link href="/">Dashboard</Link>
-            </li>
-
             {mainMenus.map((menu, index) => {
               const Icon = menu.icon;
+              const hasChildren = menu.children.length > 0;
               return (
-                <li
-                  key={index}
-                  className="py-2 px-3 flex flex-col justify-between items-center cursor-pointer text-gray-500 hover:bg-gray-800/70 hover:text-white"
-                  onClick={() =>
-                    setSelectedMenu(menu.id === selectedMenu ? '' : menu.id)
-                  }
-                >
-                  <div className="flex flex-row justify-between items-center gap-2 w-full">
-                    <div className="flex flex-row justify-start items-center gap-2">
+                <div className="w-full" key={index}>
+                  {hasChildren ? (
+                    <li
+                      key={index}
+                      className={`py-2 px-3 flex flex-col justify-between items-center cursor-pointer text-gray-500 hover:bg-gray-800/70 hover:text-white ${
+                        appState.selectedMenu.id === menu.id
+                          ? 'bg-gray-800/70 text-white'
+                          : ''
+                      }`}
+                      onClick={() =>
+                        setAppState((prev) => ({
+                          ...prev,
+                          selectedMenu: menu,
+                        }))
+                      }
+                    >
+                      <div className="flex flex-row justify-between items-center gap-2 w-full">
+                        <div className="flex flex-row justify-start items-center gap-2">
+                          <Icon className="inline-block" />
+                          <span>{menu.title}</span>
+                        </div>
+                        {appState.selectedMenu === menu ? (
+                          <FaChevronUp />
+                        ) : (
+                          <FaChevronDown />
+                        )}
+                      </div>
+                      {appState.selectedMenu.id === menu.id && (
+                        <ul className="pl-5 w-full clear-both">
+                          {menu.children.map((submenu, index) => {
+                            return (
+                              <li
+                                key={index}
+                                className="py-2 px-3 hover:bg-gray-800/70 text-gray-500 hover:text-white flex flex-row justify-between items-center gap-2 cursor-pointer w-full"
+                              >
+                                <Link href={submenu.link}>
+                                  - {submenu.title}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </li>
+                  ) : (
+                    <li
+                      onClick={() =>
+                        setAppState((prev) => ({
+                          ...prev,
+                          selectedMenu: menu,
+                        }))
+                      }
+                      className={`py-2 px-3 flex flex-row gap-2 justify-start items-center cursor-pointer text-gray-500 hover:bg-gray-800/70 hover:text-white ${
+                        appState.selectedMenu.id === menu.id
+                          ? 'bg-gray-800/70 text-white'
+                          : ''
+                      }`}
+                    >
                       <Icon className="inline-block" />
-                      <span>{menu.title}</span>
-                    </div>
-                    {selectedMenu === menu.id ? (
-                      <FaChevronUp />
-                    ) : (
-                      <FaChevronDown />
-                    )}
-                  </div>
-                  {selectedMenu === menu.id && (
-                    <ul className="pl-5 w-full clear-both">
-                      {menu.children.map((submenu, index) => {
-                        return (
-                          <li
-                            key={index}
-                            className="py-2 px-3 hover:bg-gray-800/70 text-gray-500 hover:text-white flex flex-row justify-between items-center gap-2 cursor-pointer w-full"
-                          >
-                            <Link href={submenu.link}>- {submenu.title}</Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                      <Link href={menu.link}>{menu.title}</Link>
+                    </li>
                   )}
-                </li>
+                </div>
               );
             })}
           </ul>
         </div>
         <div className="space-y-1">
-          <Link
-            href="/profile"
-            className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2"
-          >
-            <FaUser className="inline-block" />
-            <span>Profile</span>
-          </Link>
+          .
           <Link
             href="/settings"
             className="px-4 py-2 text-gray-500 hover:bg-gray-800/70 hover:text-white flex flex-row justify-start items-center gap-2"
           >
-            <FaCog className="inline-block" />
-            <span>Settings</span>
+            <FaUser className="inline-block" />
+            <span>Profile & Settings</span>
           </Link>
           <button
             onClick={handleLogout}

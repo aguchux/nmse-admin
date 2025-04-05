@@ -1,11 +1,7 @@
-import {DivContainer} from "@/components/ui/container"
+import SettingsEditor from '@/components/settings/settings';
 
 const SettingsPage = () => {
-    return (
-        <DivContainer className="flex flex-col gap-4">
-            <span className="text-black text-xl font-bold">Account Settings</span>
-        </DivContainer>
-    )
-}
+  return <SettingsEditor />;
+};
 
-export default SettingsPage
+export default SettingsPage;
