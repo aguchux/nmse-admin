@@ -1,10 +1,19 @@
 'use client';
 
 import { useAppDialog } from '@/context/DialogContext';
+import General2FASettings from './General2FASettings';
 import GeneralBillingPayments from './GeneralBillingPayments';
+import GeneralChangePassword from './GeneralChangePassword';
+import GeneralEmailSettings from './GeneralEmailSettings';
+import GeneralIntegrations from './GeneralIntegrations';
+import GeneralNotificationPreferences from './GeneralNotificationPreferences';
 import GeneralPreferences from './GeneralPreferences';
 import GeneralProfile from './GeneralProfile';
+import GeneralPushNotifications from './GeneralPushNotifications';
 import GeneralSocialMedia from './GeneralSocialMedia';
+
+
+
 
 const SettingsEditor = () => {
   const { openDialog } = useAppDialog();
@@ -85,10 +94,24 @@ const SettingsEditor = () => {
               <button className="links">- Security Settings</button>
             </li>
             <li>
-              <button className="links">- Change password</button>
+              <button 
+               onClick={() =>
+                 openDialog({
+                   title: 'Change password',
+                   content: <GeneralChangePassword />,
+                 })
+               }
+              className="links">- Change password</button>
             </li>
             <li>
-              <button className="links">- 2FA Settings</button>
+              <button 
+               onClick={() =>
+                openDialog({
+                  title: 'General 2FA Settings',
+                  content: <General2FASettings />,
+                })
+              }
+              className="links">- 2FA Settings</button>
             </li>
           </ul>
         </div>
@@ -102,16 +125,44 @@ const SettingsEditor = () => {
           <p className="text-gray-500">Manage your notification settings.</p>
           <ul className="ml-4 mt-2 space-y-2 text-gray-600">
             <li>
-              <button className="links">- Notification preferences</button>
+              <button 
+               onClick={() =>
+                openDialog({
+                  title: 'General Notification Preferences',
+                  content: <GeneralNotificationPreferences />,
+                })
+              }
+              className="links">- Notification preferences</button>
             </li>
             <li>
-              <button className="links">- SMS Setting & API</button>
+              <button 
+               onClick={() =>
+                openDialog({
+                  title: 'SMS Setting & API',
+                  content: <GeneralIntegrations />,
+                })
+              }
+              className="links">- SMS Setting & API</button>
             </li>
             <li>
-              <button className="links">- Email Settings</button>
+              <button 
+              onClick={() =>
+                openDialog({
+                  title: 'General Email Settings',
+                  content: <GeneralEmailSettings />,
+                })
+              }
+              className="links">- Email Settings</button>
             </li>
             <li>
-              <button className="links">- PUSH Notifications</button>
+              <button 
+              onClick={() =>
+                openDialog({
+                  title: 'General Push Notifications',
+                  content: <GeneralPushNotifications />,
+                })
+              }
+              className="links">- PUSH Notifications</button>
             </li>
           </ul>
         </div>
