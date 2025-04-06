@@ -1,43 +1,32 @@
 'use client';
 
+import { firebaseConfig } from '@/config';
 import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
-
 export const createFirebaseApp = () => {
-  const clientCredentials = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-  };
-
   // Ensure all required environment variables are set
   if (
-    !clientCredentials.apiKey ||
-    !clientCredentials.authDomain ||
-    !clientCredentials.databaseURL ||
-    !clientCredentials.projectId ||
-    !clientCredentials.storageBucket ||
-    !clientCredentials.messagingSenderId ||
-    !clientCredentials.appId
+    !firebaseConfig.apiKey ||
+    !firebaseConfig.authDomain ||
+    !firebaseConfig.databaseURL ||
+    !firebaseConfig.projectId ||
+    !firebaseConfig.storageBucket ||
+    !firebaseConfig.messagingSenderId ||
+    !firebaseConfig.appId
   ) {
     throw new Error('Missing Firebase configuration in environment variables');
   }
 
   // let app;
   // if (getApps().length === 0) {
-  //   app = initializeApp(clientCredentials);
+  //   app = initializeApp(firebaseConfig);
   // } else {
   //   app = getApps()[0];
   // }
 
-  const app = initializeApp(clientCredentials);
+  const app = initializeApp(firebaseConfig);
   if (typeof window !== 'undefined') {
-    if ('measurementId' in clientCredentials) {
+    if ('measurementId' in firebaseConfig) {
       getAnalytics(app);
     }
   }

@@ -30,6 +30,7 @@ export default function AppLayout({
             <AuthContextProvider>
               <AppDialogProvider>
                 <GlobalLoader />
+                {/* <FCMProvider /> */}
                 {/* <DevTools store={customStore} /> */}
                 {children}
                 <Toaster

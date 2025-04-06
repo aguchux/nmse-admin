@@ -1,5 +1,5 @@
 import ListColleges from "@/components/colleges/ListColleges"
-import DivContainer from "@/components/ui/container"
+import {DivContainer} from "@/components/ui/container"
 
 const CollegesPage = () => {
     return (

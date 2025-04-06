@@ -3,16 +3,17 @@ import { SetStateAction } from 'jotai';
 import { Dispatch, ReactNode } from 'react';
 export * from './schemas/schemas';
 
-
 export type IAuthContextType = {
   user: IUser | null;
   isLogged: boolean;
   isBusy: boolean;
+  policy: Partial<IPolicy>;
+  wallet: Partial<IWallet> | null;
 };
 
-
-export type DialogContentType = ReactNode | string | null;
+export type DialogContentType = ReactNode;
 export type DalogSize = 'md' | 'lg' | 'xl';
+
 export interface IAppContextType {
   theme: string;
   state: IAppState;
@@ -41,6 +42,15 @@ export interface IUser extends IDocument {
   notifications: INotification[];
   subscriptions: ISubscription[];
   payments: IPayment[];
+  devices: IDevice[];
+}
+
+export interface IDevice extends IDocument {
+  deviceId: string;
+  deviceType: string;
+  deviceToken: string;
+  user: IUser;
+  userId: string;
 }
 
 export interface IPolicy extends IDocument {
@@ -55,17 +65,11 @@ export interface IPolicy extends IDocument {
 export interface ICollege extends IDocument {
   collegeCode: string;
   collegeName: string;
+  specialties: ISpecialty[];
   description: string;
   examinations: IExamination[];
 }
 
-export interface IExamination extends IDocument {
-  title: string;
-  college: ICollege;
-  collegeId: string;
-  examinationCountries: IExaminationCountry[];
-  subscriptions: ISubscription[];
-}
 export interface IOTPVerified {
   id: string;
   email: string;
@@ -158,25 +162,31 @@ export interface ICollege extends IDocument {
   collegeCode: string;
   collegeName: string;
   description: string;
+  specialties: ISpecialty[];
   examinations: IExamination[];
 }
 
 export interface IExamination extends IDocument {
   title: string;
-  examinationCountries: IExaminationCountry[];
+  description: string;
   subscriptions: ISubscription[];
   college: ICollege;
   collegeId: string;
+  specialty: ISpecialty;
+  specialtyId: string;
 }
 
 export interface ISpecialty extends IDocument {
   name: string;
+  description: string;
+  college: ICollege;
+  collegeId: string;
   subjects: ISubject[];
 }
 
 export interface ISubject extends IDocument {
   name: string;
-  description?: string;
+  description: string;
   specialty: ISpecialty;
   specialtyId: string;
   cases: ICase[];

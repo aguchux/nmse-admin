@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 // Code: Firebase session storage
 import { getAuth } from 'firebase/auth';
@@ -16,13 +16,14 @@ export const storeSession = async () => {
       uid: user.uid,
       email: user.email,
       fullName: user.displayName,
-      idToken: token
+      idToken: token,
     };
     const customToken = await encrypt(payLoad as Payload);
     Cookies.set('__session', customToken, {
       expires: new Date(Date.now() + 1000 * 60 * 60 * timeInHrs),
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? '.nmseprep.com' : 'localhost',
+      domain:
+        process.env.NODE_ENV === 'production' ? '.nmseprep.com' : 'localhost',
       secure: process.env.NODE_ENV === 'production' ? true : false,
       sameSite: 'Lax',
     });
@@ -39,6 +40,22 @@ export const storeToken = async (accessToken: string) => {
   });
 };
 
+export const storeDeviceToken = async (idToken: string) => {
+  if (idToken) {
+    const payLoad = {
+      deviceToken: idToken,
+    };
+    const customDeviceToken = await encrypt(payLoad as Payload);
+    Cookies.set('__sess_device', customDeviceToken, {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * timeInHrs),
+      path: '/',
+      domain:
+        process.env.NODE_ENV === 'production' ? '.nmseprep.com' : 'localhost',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+      sameSite: 'Lax',
+    });
+  }
+};
 
 export const clearSession = async () => {
   const auth = getAuth();
@@ -48,4 +65,7 @@ export const clearSession = async () => {
 
 export const getSession = async (): Promise<string | undefined> => {
   return Cookies.get('__session');
+};
+export const getDeviceToken = async (): Promise<string | undefined> => {
+  return Cookies.get('__sess_device');
 };

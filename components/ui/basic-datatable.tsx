@@ -2,12 +2,14 @@
 
 import { ApiCaller } from '@/api';
 import { useAuthContext } from '@/context/AuthContext';
+import { useAppDialog } from '@/context/DialogContext';
 import { shortID } from '@/utils';
 import MaterialTable, { Column } from '@material-table/core';
 import { useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FaEdit, FaListUl, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaListUl, FaPlus, FaTrash } from 'react-icons/fa';
 import { IconBase } from 'react-icons/lib';
 import Swal from 'sweetalert2';
 
@@ -17,6 +19,10 @@ type UiBasicDataTableProps<T extends object> = {
   data: T[];
   columns: Column<T>[];
   loading: boolean;
+  useDialog?: boolean;
+  addComponent?: React.ReactNode;
+  viewComponent?: (id: string) => React.ReactNode;
+  editComponent?: (id: string) => React.ReactNode;
   onViewClick?: (id: string) => void;
   onUpdateClick?: (id: string) => void;
   onDeleteClick?: (id: string) => void;
@@ -30,20 +36,19 @@ export const BasicDataTable = <T extends object>({
   data,
   columns,
   loading,
+  useDialog,
+  viewComponent,
+  editComponent,
+  addComponent,
   onViewClick,
   onDeleteClick,
   onUpdateClick,
 }: UiBasicDataTableProps<T>) => {
   const [selectedRow, setSelectedRow] = useState<string>('');
   const queryClient = useQueryClient();
-  const { user, isBusy } = useAuthContext();
-  const policy = user?.policy || {
-    create: false,
-    read: false,
-    update: false,
-    delete: false,
-  };
+  const { user, isBusy, policy } = useAuthContext();
   const router = useRouter();
+  const { openDialog } = useAppDialog();
 
   const extendedColumns: Column<T & { id?: string }>[] = [
     {
@@ -74,10 +79,18 @@ export const BasicDataTable = <T extends object>({
             aria-label="View Details"
             disabled={isBusy}
             onClick={() => {
-              if (onViewClick) {
-                onViewClick(rowData.id!);
+              if (useDialog && viewComponent) {
+                // open dialog with viewComponent
+                openDialog({
+                  title: 'View Details',
+                  content: <>{viewComponent(rowData.id!)}</>,
+                });
               } else {
-                onView(rowData.id!);
+                if (onViewClick) {
+                  onViewClick(rowData.id!);
+                } else {
+                  onView(rowData.id!);
+                }
               }
             }}
             className="text-white bg-green-500 hover:bg-green-700 p-2"
@@ -88,10 +101,18 @@ export const BasicDataTable = <T extends object>({
             aria-label="Edit Details"
             disabled={isBusy}
             onClick={() => {
-              if (onUpdateClick) {
-                onUpdateClick(rowData.id!);
+              if (useDialog && editComponent) {
+                // open dialog with editComponent
+                openDialog({
+                  title: 'Edit Details',
+                  content: <>{editComponent(rowData.id!)}</>,
+                });
               } else {
-                onUpdate(rowData.id!);
+                if (onUpdateClick) {
+                  onUpdateClick(rowData.id!);
+                } else {
+                  onUpdate(rowData.id!);
+                }
               }
             }}
             className="text-white bg-blue-500 hover:bg-blue-700 p-2"
@@ -141,8 +162,7 @@ export const BasicDataTable = <T extends object>({
   };
 
   const onView = async (id: string) => {
-    console.log(`View ${resource}/${id}`);
-    await router.push(`/dashboard/${resource}/${id}`);
+    await router.push(`/${resource}/${id}`);
   };
   const onUpdate = async (id: string) => {
     // check if the user has permission to update
@@ -154,8 +174,7 @@ export const BasicDataTable = <T extends object>({
       );
       return;
     }
-    console.log(`Update ${resource}/${id}`);
-    await router.push(`/dashboard/${resource}/${id}/edit`);
+    await router.push(`/${resource}/${id}/edit`);
   };
 
   const onDelete = async (id: string) => {
@@ -184,6 +203,9 @@ export const BasicDataTable = <T extends object>({
           await queryClient.invalidateQueries({
             queryKey: [resource, user?.id],
           });
+          await queryClient.invalidateQueries({
+            queryKey: [`${resource}`],
+          });
           await Swal.fire(
             'Deleted!',
             'The record has been deleted.',
@@ -203,6 +225,38 @@ export const BasicDataTable = <T extends object>({
 
   return (
     <>
+      {useDialog && addComponent && (
+        <div className="flex justify-between items-center mb-4">
+          <h2></h2>
+          {useDialog && addComponent ? (
+            <button
+              aria-label="Add New Record"
+              onClick={() =>
+                openDialog({
+                  title: 'Add New Record',
+                  content: addComponent,
+                })
+              }
+              className="text-white bg-blue-500 hover:bg-blue-700 p-2 flex items-center"
+            >
+              <FaPlus size={15} className="mr-2" />
+              Add New
+            </button>
+          ) : (
+            <>
+              <Link
+                href={`/${resource}/create`}
+                aria-label="Add New Record"
+                onClick={() => {}}
+                className="text-white bg-blue-500 hover:bg-blue-700 p-2 flex items-center"
+              >
+                <FaPlus size={15} className="mr-2" />
+                Add New
+              </Link>
+            </>
+          )}
+        </div>
+      )}
       <MaterialTable
         title={title}
         isLoading={loading}
